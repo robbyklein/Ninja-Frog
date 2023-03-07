@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     private float dirX;
     private bool isWallJumping;
     private float wallJumpDirection;
+    private float boxCastAngle = 0f;
+    private float boxCastDistance = .1f;
 
     [SerializeField] private float jumpForce = 21f;
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
@@ -22,11 +25,11 @@ public class PlayerMovement : MonoBehaviour
 
     private enum MovementState
     {
-        idle,
-        running,
-        jumping,
-        falling,
-        sliding
+        Idle,
+        Running,
+        Jumping,
+        Falling,
+        Sliding
     }
 
 
@@ -40,23 +43,53 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Set horizontal input amount
-        dirX = Input.GetAxisRaw("Horizontal");
+        HandleRunning();
+        HandleSliding();
 
-        // Running
+        UpdateFlipState();
+        UpdateAnimationState();
+    }
+
+    private void OnMove(InputValue value)
+    {
+        Vector2 movement = value.Get<Vector2>();
+        dirX = movement.x;
+    }
+
+    private void OnJump(InputValue value)
+    {
+        HandleJumping();
+        HandleWallJumping();
+    }
+
+    private void HandleRunning()
+    {
         if (!isWallJumping)
         {
             rb.velocity = new Vector2(dirX * speed, rb.velocity.y);
         }
+    }
 
-        // Normal Jump
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+    private void HandleJumping()
+    {
+        if (IsGrounded())
         {
             rb.velocity = new Vector2(-dirX * rb.velocity.x, jumpForce);
         }
+    }
 
+    private void HandleSliding()
+    {
+        if (IsWalled() && !isWallJumping)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
+        }
+    }
+
+    private void HandleWallJumping()
+    {
         // Wall Jump
-        if (Input.GetButtonDown("Jump") && IsWalled())
+        if (IsWalled())
         {
             // Set delay before user gets control again
             wallJumpDirection = -dirX;
@@ -69,16 +102,6 @@ public class PlayerMovement : MonoBehaviour
             // Jump out and up
             rb.velocity = new Vector2(wallJumpDirection * wallJumpForce.x, wallJumpForce.y);
         }
-
-
-        // Handle Slide
-        if (IsWalled() && !isWallJumping)
-        {
-            Debug.Log("Player Sliding");
-            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-        }
-
-        UpdateAnimationState();
     }
 
     private void FinishWallJump()
@@ -86,29 +109,31 @@ public class PlayerMovement : MonoBehaviour
         isWallJumping = false;
     }
 
+    private void UpdateFlipState()
+    {
+        sprite.flipX = dirX < 0f;
+    }
+
     private void UpdateAnimationState()
     {
-        // Flip state
-        sprite.flipX = dirX < 0f;
-
         // Animation state
-        MovementState state = MovementState.idle;
+        MovementState state = MovementState.Idle;
 
         if (IsWalled())
         {
-            state = MovementState.sliding;
+            state = MovementState.Sliding;
         }
         else if (IsGrounded() && dirX != 0f)
         {
-            state = MovementState.running;
+            state = MovementState.Running;
         }
         else if (!IsGrounded() && !IsWalled() && rb.velocity.y > 0.1f)
         {
-            state = MovementState.jumping;
+            state = MovementState.Jumping;
         }
         else if (!IsGrounded() && !IsWalled() && rb.velocity.y < 0.1f)
-            state = MovementState.falling;
         {
+            state = MovementState.Falling;
         }
 
         anim.SetInteger("state", (int)state);
@@ -116,14 +141,13 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, Vector2.down, boxCastDistance, jumpableGround);
     }
 
     private bool IsWalled()
     {
         Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
-        bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, direction, .1f, jumpableWalls);
+        bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
         return onWall && !IsGrounded() && dirX != 0f; // Grounded takes priority
     }
-
 }
