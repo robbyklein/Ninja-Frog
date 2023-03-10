@@ -61,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         SetMaxVelocity();
-        handleGravityAdjustments();
         Move();
         HandleSliding();
     }
@@ -69,19 +68,6 @@ public class PlayerMovement : MonoBehaviour
     private void SetMaxVelocity()
     {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, 30f);
-    }
-
-    private void handleGravityAdjustments()
-    {
-        // To limit prevent speed up during jump
-        if (IsGrounded())
-        {
-            rb.gravityScale = 0;
-        }
-        else
-        {
-            rb.gravityScale = 5;
-        }
     }
 
     // Movement
@@ -149,8 +135,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        // rb.AddForce(new Vector2(rb.velocity.x, jumpForce));
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        rb.AddForce(new Vector2(rb.velocity.x, jumpForce), ForceMode2D.Impulse);
+        // rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
     private void HandleQueuedJumps()
@@ -204,6 +190,8 @@ public class PlayerMovement : MonoBehaviour
     // Wall sliding
     private void HandleSliding()
     {
+        Debug.Log(IsWalled());
+
         if (IsWalled() && !isWallJumping)
         {
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
@@ -225,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
-        return onWall && !IsGrounded() && movementInput.x != 0f; // Grounded takes priority
+        return onWall && !IsGrounded() && movementInput.x != 0f && rb.velocity.y < 2f; // Grounded takes priority
     }
 
     private bool IsAlmostWalled()
