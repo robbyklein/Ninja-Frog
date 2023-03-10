@@ -3,23 +3,33 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // Components
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
     private BoxCollider2D coll;
 
-    private float dirX;
-    private bool isWallJumping;
-    private float wallJumpDirection;
-    private float boxCastAngle = 0f;
-    private float boxCastDistance = .1f;
+    // Constants
+    const float boxCastAngle = 0f;
+    const float boxCastDistance = .1f;
+    const float almostBoxCastDistance = 2f;
 
+    // Movement
+    private Vector2 movementInput;
+    [SerializeField] private float maxMovementSpeed = 20f;
+    [SerializeField] private float accelerationSpeed = 5f;
+    [SerializeField] private float decelerationSpeed = 10f;
+    [SerializeField] private float accelerator = 1.2f;
+
+    // Jumping
+    private bool isWallJumping;
+    private bool jumpQueued = false;
+    private bool wallJumpQueued = false;
+    private const float queueDuration = 0.15f;
     [SerializeField] private float jumpForce = 21f;
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
-    [SerializeField] private float speed = 9f;
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float wallJumpDuration = .2f;
-
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private LayerMask jumpableWalls;
 
@@ -32,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
         Sliding
     }
 
-
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -43,64 +52,109 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        HandleRunning();
-        HandleSliding();
-
+        HandleQueuedJumps();
+        HandleQueuedWallJumps();
         UpdateFlipState();
         UpdateAnimationState();
     }
 
+    private void FixedUpdate()
+    {
+        Move();
+        HandleSliding();
+    }
+
+    // Movement
     private void OnMove(InputValue value)
     {
-        Vector2 movement = value.Get<Vector2>();
-        dirX = movement.x;
+        movementInput = value.Get<Vector2>();
     }
 
-    private void OnJump(InputValue value)
-    {
-        HandleJumping();
-        HandleWallJumping();
-    }
-
-    private void HandleRunning()
+    private void Move()
     {
         if (!isWallJumping)
         {
-            rb.velocity = new Vector2(dirX * speed, rb.velocity.y);
+            // Figure out the direction we're moving
+            Vector2 direction = movementInput.x < 0f ? Vector2.left : Vector2.right;
+
+            // Calculate force
+            float targetSpeed = movementInput.x * maxMovementSpeed; // 20, -20, 0
+            float speedDifference = targetSpeed - rb.velocity.x; // 10
+            float changeRate = Mathf.Abs(targetSpeed) > 0.1f ? accelerationSpeed : decelerationSpeed;
+            float horizontalForce = Mathf.Pow(Mathf.Abs(speedDifference) * changeRate, accelerator) * Mathf.Sign(speedDifference);
+
+            Vector2 force = new Vector2(horizontalForce, rb.velocity.y) * Vector2.right;
+
+            // Add it
+            rb.AddForce(force);
+        }
+
+    }
+
+    // Jumping
+    private void OnJump(InputValue value)
+    {
+        bool buttonDown = value.Get<float>() == 1;
+
+        if (buttonDown && IsGrounded())
+        {
+            Jump();
+        }
+        else if (buttonDown && IsWalled())
+        {
+            WallJump();
+        }
+        else if (buttonDown && IsAlmostGrounded())
+        {
+            jumpQueued = true;
+            Invoke("ClearJumpQueued", queueDuration);
+        }
+        else if (buttonDown && IsAlmostWalled())
+        {
+            wallJumpQueued = true;
+            Invoke("ClearWallJumpQueued", queueDuration);
         }
     }
 
-    private void HandleJumping()
+    private void Jump()
     {
-        if (IsGrounded())
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    private void HandleQueuedJumps()
+    {
+        if (jumpQueued && IsGrounded())
         {
-            rb.velocity = new Vector2(-dirX * rb.velocity.x, jumpForce);
+            ClearJumpQueued();
+            Jump();
         }
     }
 
-    private void HandleSliding()
+    private void ClearJumpQueued()
     {
-        if (IsWalled() && !isWallJumping)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-        }
+        jumpQueued = false;
     }
 
-    private void HandleWallJumping()
+    private void WallJump()
     {
-        // Wall Jump
-        if (IsWalled())
-        {
-            // Set delay before user gets control again
-            wallJumpDirection = -dirX;
-            isWallJumping = true;
-            Invoke("FinishWallJump", wallJumpDuration);
-        }
+        // Set delay before user gets control again
+        isWallJumping = true;
+        Invoke("FinishWallJump", wallJumpDuration);
+
 
         if (isWallJumping)
         {
             // Jump out and up
-            rb.velocity = new Vector2(wallJumpDirection * wallJumpForce.x, wallJumpForce.y);
+            rb.velocity = new Vector2(-movementInput.x * wallJumpForce.x, wallJumpForce.y);
+        }
+    }
+
+    private void HandleQueuedWallJumps()
+    {
+        if (wallJumpQueued && IsWalled())
+        {
+            ClearWallJumpQueued();
+            WallJump();
         }
     }
 
@@ -109,9 +163,57 @@ public class PlayerMovement : MonoBehaviour
         isWallJumping = false;
     }
 
+    private void ClearWallJumpQueued()
+    {
+        wallJumpQueued = false;
+    }
+
+
+    // Wall sliding
+    private void HandleSliding()
+    {
+        if (IsWalled() && !isWallJumping)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
+        }
+    }
+
+    // Helpers
+    private bool IsGrounded()
+    {
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, Vector2.down, boxCastDistance, jumpableGround);
+    }
+
+    private bool IsAlmostGrounded()
+    {
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, Vector2.down, almostBoxCastDistance, jumpableGround);
+    }
+
+    private bool IsWalled()
+    {
+        Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
+        bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
+        return onWall && !IsGrounded() && movementInput.x != 0f; // Grounded takes priority
+    }
+
+    private bool IsAlmostWalled()
+    {
+        Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
+        bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, almostBoxCastDistance, jumpableWalls);
+        return onWall && !IsGrounded() && movementInput.x != 0f; // Grounded takes priority
+    }
+
+    // Sprite state
     private void UpdateFlipState()
     {
-        sprite.flipX = dirX < 0f;
+        if (movementInput.x < 0f)
+        {
+            sprite.flipX = true;
+        }
+        else if (movementInput.x > 0f)
+        {
+            sprite.flipX = false;
+        }
     }
 
     private void UpdateAnimationState()
@@ -123,7 +225,7 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.Sliding;
         }
-        else if (IsGrounded() && dirX != 0f)
+        else if (IsGrounded() && movementInput.x != 0f)
         {
             state = MovementState.Running;
         }
@@ -137,17 +239,5 @@ public class PlayerMovement : MonoBehaviour
         }
 
         anim.SetInteger("state", (int)state);
-    }
-
-    private bool IsGrounded()
-    {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, Vector2.down, boxCastDistance, jumpableGround);
-    }
-
-    private bool IsWalled()
-    {
-        Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
-        bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
-        return onWall && !IsGrounded() && dirX != 0f; // Grounded takes priority
     }
 }
