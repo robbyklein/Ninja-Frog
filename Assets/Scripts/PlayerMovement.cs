@@ -60,8 +60,28 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        SetMaxVelocity();
+        handleGravityAdjustments();
         Move();
         HandleSliding();
+    }
+
+    private void SetMaxVelocity()
+    {
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, 30f);
+    }
+
+    private void handleGravityAdjustments()
+    {
+        // To limit prevent speed up during jump
+        if (IsGrounded())
+        {
+            rb.gravityScale = 0;
+        }
+        else
+        {
+            rb.gravityScale = 5;
+        }
     }
 
     // Movement
@@ -91,6 +111,12 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    private void OnRun(InputValue value)
+    {
+        bool buttonDown = value.Get<float>() == 1;
+
+    }
+
     // Jumping
     private void OnJump(InputValue value)
     {
@@ -114,10 +140,16 @@ public class PlayerMovement : MonoBehaviour
             wallJumpQueued = true;
             Invoke("ClearWallJumpQueued", queueDuration);
         }
+        else if (!buttonDown && rb.velocity.y > 0.1f && !isWallJumping)
+        {
+            // Shorten jump early if not already falling
+            rb.AddForce(new Vector2(0, rb.velocity.y * 20f * Mathf.Sign(-rb.velocity.y)));
+        }
     }
 
     private void Jump()
     {
+        // rb.AddForce(new Vector2(rb.velocity.x, jumpForce));
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
