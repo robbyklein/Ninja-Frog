@@ -14,8 +14,8 @@ public class PlayerMovement : MonoBehaviour
     private const float boxCastDistance = .1f;
     private const float almostBoxCastDistance = 2f;
     private const float walledThreshold = 7f;
-    //private const float cayoteTime = 0.2f;
-    //private float cayoteTimeCounter;
+    private const float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
 
     // Movement
     private Vector2 movementInput;
@@ -58,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleCoyoteTime();
         HandleQueuedJumps();
         HandleQueuedWallJumps();
         UpdateFlipState();
@@ -74,6 +75,18 @@ public class PlayerMovement : MonoBehaviour
     private void SetMaxVelocity()
     {
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, 30f);
+    }
+
+    private void HandleCoyoteTime()
+    {
+        if (IsGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
     }
 
     // Movement
@@ -114,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
     {
         bool buttonDown = value.Get<float>() == 1;
 
-        if (buttonDown && IsGrounded())
+        if (buttonDown && coyoteTimeCounter > 0f)
         {
             Jump();
         }
@@ -136,6 +149,8 @@ public class PlayerMovement : MonoBehaviour
         {
             // Shorten jump early if not already falling
             rb.AddForce(new Vector2(0, rb.velocity.y * 20f * Mathf.Sign(-rb.velocity.y)));
+            coyoteTimeCounter = 0f; // Clear late jumping
+
         }
     }
 
@@ -147,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleQueuedJumps()
     {
-        if (jumpQueued && IsGrounded())
+        if (jumpQueued && coyoteTimeCounter > 0f)
         {
             ClearJumpQueued();
             Jump();
