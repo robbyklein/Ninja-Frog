@@ -10,9 +10,12 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D coll;
 
     // Constants
-    const float boxCastAngle = 0f;
-    const float boxCastDistance = .1f;
-    const float almostBoxCastDistance = 2f;
+    private const float boxCastAngle = 0f;
+    private const float boxCastDistance = .1f;
+    private const float almostBoxCastDistance = 2f;
+    private const float walledThreshold = 7f;
+    //private const float cayoteTime = 0.2f;
+    //private float cayoteTimeCounter;
 
     // Movement
     private Vector2 movementInput;
@@ -32,6 +35,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float wallJumpDuration = .2f;
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private LayerMask jumpableWalls;
+
+    // Sounds
+    [SerializeField] private AudioSource jumpSound;
 
     private enum MovementState
     {
@@ -135,8 +141,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        rb.AddForce(new Vector2(rb.velocity.x, jumpForce), ForceMode2D.Impulse);
-        // rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        rb.AddForce(new Vector2(rb.velocity.x, jumpForce * 100), ForceMode2D.Impulse);
+        jumpSound.Play();
     }
 
     private void HandleQueuedJumps()
@@ -163,6 +169,7 @@ public class PlayerMovement : MonoBehaviour
         if (isWallJumping)
         {
             // Jump out and up
+            jumpSound.Play();
             rb.velocity = new Vector2(-movementInput.x * wallJumpForce.x, wallJumpForce.y);
         }
     }
@@ -190,8 +197,6 @@ public class PlayerMovement : MonoBehaviour
     // Wall sliding
     private void HandleSliding()
     {
-        Debug.Log(IsWalled());
-
         if (IsWalled() && !isWallJumping)
         {
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
@@ -213,7 +218,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
-        return onWall && !IsGrounded() && movementInput.x != 0f && rb.velocity.y < 2f; // Grounded takes priority
+        return onWall && !IsGrounded() && movementInput.x != 0f && rb.velocity.y < walledThreshold; // Grounded takes priority
     }
 
     private bool IsAlmostWalled()
