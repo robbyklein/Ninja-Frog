@@ -79,7 +79,7 @@ public class PlayerJumping : MonoBehaviour
         else if (!buttonDown && rb.velocity.y > 0.1f && !isWallJumping)
         {
             // Shorten jump early if not already falling
-            rb.AddForce(new Vector2(0, rb.velocity.y * 20f * Mathf.Sign(-rb.velocity.y)));
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
             coyoteTimeCounter = 0f; // Clear late jumping
 
         }
@@ -87,7 +87,7 @@ public class PlayerJumping : MonoBehaviour
 
     private void Jump()
     {
-        rb.AddForce(new Vector2(rb.velocity.x, jumpForce * 100), ForceMode2D.Impulse);
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         jumpSound.Play();
     }
 

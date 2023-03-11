@@ -15,7 +15,7 @@ public class PlayerState : MonoBehaviour
     private const float boxCastDistance = .1f;
     private const float almostBoxCastDistance = 1.5f;
     private const float walledThreshold = 7f;
-    private bool isFacingRight = true;
+    public bool isFacingRight = true;
 
     private enum MovementState
     {
@@ -39,7 +39,7 @@ public class PlayerState : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateFlipState();
+        TurnCheck();
         UpdateAnimationState();
     }
 
@@ -56,14 +56,14 @@ public class PlayerState : MonoBehaviour
 
     public bool IsWalled()
     {
-        Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
+        Vector2 direction = !isFacingRight ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
         return onWall && !IsGrounded() && playerMovement.movementInput.x != 0f && rb.velocity.y < walledThreshold; // Grounded takes priority
     }
 
     public bool IsAlmostWalled()
     {
-        Vector2 direction = sprite.flipX ? Vector2.left : Vector2.right;
+        Vector2 direction = !isFacingRight ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, almostBoxCastDistance, jumpableWalls);
         return onWall && !IsGrounded() && playerMovement.movementInput.x != 0f; // Grounded takes priority
     }
@@ -71,19 +71,31 @@ public class PlayerState : MonoBehaviour
 
 
     // Sprite state
-    private void UpdateFlipState()
+    private void TurnCheck()
     {
-        if (playerMovement.movementInput.x < 0f)
+        if (playerMovement.movementInput.x > 0 && !isFacingRight)
+        {
+            Turn();
+        }
+        else if (playerMovement.movementInput.x < 0 && isFacingRight)
+        {
+            Turn();
+        }
+    }
+
+    private void Turn()
+    {
+        if (isFacingRight)
         {
             Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = false;
+            isFacingRight = !isFacingRight;
         }
-        else if (playerMovement.movementInput.x > 0f)
+        else
         {
             Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = true;
+            isFacingRight = !isFacingRight;
         }
     }
 

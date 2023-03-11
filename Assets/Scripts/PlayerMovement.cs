@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
             Vector2 force = new Vector2(horizontalForce, rb.velocity.y) * Vector2.right;
 
             // Add it
-            rb.AddForce(force);
+            rb.AddForce(force * Time.deltaTime);
         }
 
     }
