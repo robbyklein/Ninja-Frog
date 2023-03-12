@@ -16,11 +16,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float decelerationSpeed = 10f;
     [SerializeField] private float accelerator = 1.2f;
 
+    // Camera
+    private float fallSpeedYDampingChangeThreshold;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerState = GetComponent<PlayerState>();
         playerJumping = GetComponent<PlayerJumping>();
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+
+        //Physics2D.IgnoreLayerCollision(0, 8);
     }
 
     private void FixedUpdate()
@@ -28,6 +34,20 @@ public class PlayerMovement : MonoBehaviour
         SetMaxVelocity();
         Move();
         HandleSliding();
+    }
+
+    void Update()
+    {
+        if (rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
+        {
+            CameraManager.instance.LerpYDamping(true);
+        }
+
+        if (rb.velocity.y >= 0f && !CameraManager.instance.IsLerpingYDamping && CameraManager.instance.LerpedFromPlayerFalling)
+        {
+            CameraManager.instance.LerpedFromPlayerFalling = false;
+            CameraManager.instance.LerpYDamping(false);
+        }
     }
 
     private void SetMaxVelocity()

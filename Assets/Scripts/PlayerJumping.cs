@@ -9,7 +9,7 @@ public class PlayerJumping : MonoBehaviour
     private Rigidbody2D rb;
 
     // Constants
-    private const float coyoteTime = 0.2f;
+    private const float coyoteTime = 0.1f;
     private float coyoteTimeCounter;
 
     // Jumping

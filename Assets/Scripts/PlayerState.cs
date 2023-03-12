@@ -10,6 +10,7 @@ public class PlayerState : MonoBehaviour
 
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private LayerMask jumpableWalls;
+    [SerializeField] private CameraFollowObject cameraFollowObject;
 
     private const float boxCastAngle = 0f;
     private const float boxCastDistance = .1f;
@@ -39,7 +40,11 @@ public class PlayerState : MonoBehaviour
 
     private void FixedUpdate()
     {
-        TurnCheck();
+        if (playerMovement.movementInput.x > 0f || playerMovement.movementInput.x < 0f)
+        {
+            TurnCheck();
+        }
+
         UpdateAnimationState();
     }
 
@@ -90,12 +95,16 @@ public class PlayerState : MonoBehaviour
             Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
             isFacingRight = !isFacingRight;
+
+            cameraFollowObject.CallTurn();
         }
         else
         {
             Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
             isFacingRight = !isFacingRight;
+
+            cameraFollowObject.CallTurn();
         }
     }
 
