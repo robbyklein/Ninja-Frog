@@ -3,20 +3,21 @@ using UnityEngine;
 
 public class FPSCounter : MonoBehaviour
 {
+    // Components
     private TextMeshProUGUI fpsText;
+
+    // State
     private float frameCount = 0;
     private double nextUpdate = 0.0;
     private double fps = 0.0;
     private double updateRate = 4.0;
 
-    // Start is called before the first frame update
     void Start()
     {
         nextUpdate = Time.time;
         fpsText = GetComponent<TextMeshProUGUI>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         frameCount++;
@@ -28,6 +29,5 @@ public class FPSCounter : MonoBehaviour
             frameCount = 0;
             fpsText.text = "FPS: " + fps;
         }
-
     }
 }
