@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Input state
     public Vector2 movementInput { get; private set; }
+    public bool lastSlideRight { get; set; } = true;
 
     private void Start()
     {
@@ -50,7 +51,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void SetMaxVelocity()
     {
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, 30f);
+        float max = rb.velocity.y < 0f ? 30f : 35f;
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, max);
     }
 
     private void OnMove(InputValue value)
@@ -80,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (playerSpriteState.IsWalled() && !playerJumping.isWallJumping)
         {
+            lastSlideRight = playerSpriteState.isFacingRight;
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
         }
     }

@@ -20,6 +20,7 @@ public class PlayerJumping : MonoBehaviour
 
     // State
     private float coyoteTimeCounter;
+    private float coyoteTimeCounterWall;
     public bool isWallJumping;
     private bool jumpQueued = false;
     private bool wallJumpQueued = false;
@@ -48,6 +49,15 @@ public class PlayerJumping : MonoBehaviour
         {
             coyoteTimeCounter -= Time.deltaTime;
         }
+
+        if (playerSpriteState.IsWalled())
+        {
+            coyoteTimeCounterWall = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounterWall -= Time.deltaTime;
+        }
     }
 
     private void OnJump(InputValue value)
@@ -58,7 +68,7 @@ public class PlayerJumping : MonoBehaviour
         {
             Jump();
         }
-        else if (buttonDown && playerSpriteState.IsWalled())
+        else if (buttonDown && coyoteTimeCounterWall > 0f)
         {
             WallJump();
         }
@@ -111,12 +121,14 @@ public class PlayerJumping : MonoBehaviour
 
         // Jump out and up
         jumpSound.Play();
-        rb.velocity = new Vector2(-playerMovement.movementInput.x * wallJumpForce.x, wallJumpForce.y);
+
+        float xVelocity = playerMovement.lastSlideRight ? -1f : 1f;
+        rb.velocity = new Vector2(xVelocity * wallJumpForce.x, wallJumpForce.y);
     }
 
     private void HandleQueuedWallJumps()
     {
-        if (wallJumpQueued && playerSpriteState.IsWalled())
+        if (wallJumpQueued && coyoteTimeCounter > 0f)
         {
             ClearWallJumpQueued();
             WallJump();
