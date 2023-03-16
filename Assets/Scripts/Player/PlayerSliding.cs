@@ -4,20 +4,20 @@ public class PlayerSliding : MonoBehaviour
 {
     // Other components
     private Rigidbody2D rb;
-    private PlayerSpriteState playerSpriteState;
     private PlayerWallJumping playerWallJumping;
+    private PlayerHelpers playerHelpers;
+    private PlayerTurning playerTurning;
 
     // Settings
     [SerializeField] private float slideSpeed = 6f;
 
-    // State
-    public bool lastSlideRight { get; set; } = true;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        playerSpriteState = GetComponent<PlayerSpriteState>();
         playerWallJumping = GetComponent<PlayerWallJumping>();
+        playerHelpers = GetComponent<PlayerHelpers>();
+        playerTurning = GetComponent<PlayerTurning>();
     }
 
     private void FixedUpdate()
@@ -27,9 +27,8 @@ public class PlayerSliding : MonoBehaviour
 
     private void HandleSliding()
     {
-        if (playerSpriteState.IsWalled() && !playerWallJumping.isWallJumping)
+        if (playerHelpers.IsWalled() && !playerWallJumping.isWallJumping)
         {
-            lastSlideRight = playerSpriteState.isFacingRight;
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
         }
     }

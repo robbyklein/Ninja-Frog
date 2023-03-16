@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,18 +9,21 @@ public class PlayerWallJumping : MonoBehaviour
     private PlayerSpriteState playerSpriteState;
     private Rigidbody2D rb;
     private PlayerSliding playerSliding;
+    private PlayerHelpers playerHelpers;
 
     // Settings
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
     [SerializeField] private float wallJumpDuration = .2f;
     [SerializeField] private float queueDuration = 0.15f;
     [SerializeField] private float coyoteTime = 0.1f;
-    [SerializeField] private AudioSource jumpSound;
 
     // State
     private float coyoteTimeCounter;
     private bool wallJumpQueued = false;
     public bool isWallJumping { get; private set; }
+
+    // Event
+    public event Action OnWallJumpTriggered;
 
     void Start()
     {
@@ -27,6 +31,7 @@ public class PlayerWallJumping : MonoBehaviour
         playerSpriteState = GetComponent<PlayerSpriteState>();
         playerSliding = GetComponent<PlayerSliding>();
         rb = GetComponent<Rigidbody2D>();
+        playerHelpers = GetComponent<PlayerHelpers>();
     }
 
     void Update()
@@ -43,7 +48,7 @@ public class PlayerWallJumping : MonoBehaviour
         {
             WallJump();
         }
-        else if (buttonDown && playerSpriteState.IsAlmostWalled())
+        else if (buttonDown && playerHelpers.IsAlmostWalled())
         {
             wallJumpQueued = true;
             Invoke("ClearWallJumpQueued", queueDuration);
@@ -52,7 +57,7 @@ public class PlayerWallJumping : MonoBehaviour
 
     void UpdateCoyoteTimeCounter()
     {
-        if (playerSpriteState.IsWalled())
+        if (playerHelpers.IsWalled())
         {
             coyoteTimeCounter = coyoteTime;
         }
@@ -64,17 +69,21 @@ public class PlayerWallJumping : MonoBehaviour
 
     private void WallJump()
     {
+
         // Set local state
         isWallJumping = true;
 
         // Call clear local state function
         Invoke("FinishWallJump", wallJumpDuration);
 
-        // Play a sound
-        jumpSound.Play();
+        // Broadcast event
+        OnWallJumpTriggered?.Invoke();
+
+        // Figure out direction
+        PlayerHelpers.WallDirection closestWall = playerHelpers.ClosestWallDirection();
+        float xDirection = closestWall == PlayerHelpers.WallDirection.Right ? -1f : 1f;
 
         // Perform movement
-        float xDirection = playerSliding.lastSlideRight ? -1f : 1f;
         rb.velocity = new Vector2(xDirection * wallJumpForce.x, wallJumpForce.y);
     }
 

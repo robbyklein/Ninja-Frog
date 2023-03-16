@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,7 @@ public class PlayerJumping : MonoBehaviour
     private PlayerSpriteState playerSpriteState;
     private PlayerWallJumping playerWallJumping;
     private Rigidbody2D rb;
+    private PlayerHelpers playerHelpers;
 
     // Settings
     [SerializeField] private float coyoteTime = 0.1f;
@@ -18,11 +20,15 @@ public class PlayerJumping : MonoBehaviour
     private float coyoteTimeCounter;
     private bool jumpQueued = false;
 
+    // Event
+    public event Action OnJumpTriggered;
+
     private void Start()
     {
         playerSpriteState = GetComponent<PlayerSpriteState>();
         playerWallJumping = GetComponent<PlayerWallJumping>();
         rb = GetComponent<Rigidbody2D>();
+        playerHelpers = GetComponent<PlayerHelpers>();
     }
 
     private void Update()
@@ -33,7 +39,7 @@ public class PlayerJumping : MonoBehaviour
 
     private void UpdateCoyoteTimeCounter()
     {
-        if (playerSpriteState.IsGrounded())
+        if (playerHelpers.IsGrounded())
         {
             coyoteTimeCounter = coyoteTime;
         }
@@ -51,7 +57,7 @@ public class PlayerJumping : MonoBehaviour
         {
             Jump();
         }
-        else if (buttonDown && playerSpriteState.IsAlmostGrounded())
+        else if (buttonDown && playerHelpers.IsAlmostGrounded())
         {
             jumpQueued = true;
             Invoke("ClearJumpQueued", queueDuration);
@@ -69,7 +75,7 @@ public class PlayerJumping : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 
         // Play sound effect
-        jumpSound.Play();
+        OnJumpTriggered?.Invoke();
     }
 
     private void HandleQueuedJumps()

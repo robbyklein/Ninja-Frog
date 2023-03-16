@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,8 +8,8 @@ public class PlayerDeath : MonoBehaviour
     private Animator anim;
     private Rigidbody2D rb;
 
-    // Settings
-    [SerializeField] private AudioSource deathSound;
+    // Event
+    public event Action OnDeath;
 
     void Start()
     {
@@ -32,8 +33,8 @@ public class PlayerDeath : MonoBehaviour
         // Play death animation
         anim.SetTrigger("death");
 
-        // Play death sound effect
-        deathSound.Play();
+        // Broadcast event
+        OnDeath?.Invoke();
     }
 
     private void RestartLevel()
