@@ -2,14 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerWallJumping : MonoBehaviour
-{
+public class PlayerWallJumping : MonoBehaviour {
     // Components
-    private PlayerMovement playerMovement;
-    private PlayerSpriteState playerSpriteState;
-    private Rigidbody2D rb;
-    private PlayerSliding playerSliding;
-    private PlayerHelpers playerHelpers;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] PlayerHelpers playerHelpers;
 
     // Settings
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
@@ -18,60 +14,55 @@ public class PlayerWallJumping : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.1f;
 
     // State
-    private float coyoteTimeCounter;
-    private bool wallJumpQueued = false;
-    public bool isWallJumping { get; private set; }
+    float coyoteTimeCounter;
+    bool wallJumpQueued = false;
+    bool isWallJumping;
 
     // Event
     public event Action OnWallJumpTriggered;
 
-    void Start()
-    {
-        playerMovement = GetComponent<PlayerMovement>();
-        playerSpriteState = GetComponent<PlayerSpriteState>();
-        playerSliding = GetComponent<PlayerSliding>();
-        rb = GetComponent<Rigidbody2D>();
-        playerHelpers = GetComponent<PlayerHelpers>();
-    }
-
-    void Update()
-    {
+    void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedWallJumps();
     }
 
-    private void OnJump(InputValue value)
-    {
+    public bool IsWallJumping {
+        get { return isWallJumping; }
+        private set { isWallJumping = value; }
+    }
+
+    bool WallJumpQueued {
+        get { return wallJumpQueued; }
+        set { wallJumpQueued = value; }
+    }
+
+    float CoyoteTimeCounter {
+        get { return coyoteTimeCounter; }
+        set { coyoteTimeCounter = value; }
+    }
+
+    void OnJump(InputValue value) {
         bool buttonDown = value.Get<float>() == 1;
 
-        if (buttonDown && coyoteTimeCounter > 0f)
-        {
+        if (buttonDown && CoyoteTimeCounter > 0f) {
             WallJump();
-        }
-        else if (buttonDown && playerHelpers.IsAlmostWalled())
-        {
-            wallJumpQueued = true;
+        } else if (buttonDown && playerHelpers.IsAlmostWalled()) {
+            WallJumpQueued = true;
             Invoke("ClearWallJumpQueued", queueDuration);
         }
     }
 
-    void UpdateCoyoteTimeCounter()
-    {
-        if (playerHelpers.IsWalled())
-        {
-            coyoteTimeCounter = coyoteTime;
-        }
-        else
-        {
-            coyoteTimeCounter -= Time.deltaTime;
+    void UpdateCoyoteTimeCounter() {
+        if (playerHelpers.IsWalled()) {
+            CoyoteTimeCounter = coyoteTime;
+        } else {
+            CoyoteTimeCounter -= Time.deltaTime;
         }
     }
 
-    private void WallJump()
-    {
-
+    void WallJump() {
         // Set local state
-        isWallJumping = true;
+        IsWallJumping = true;
 
         // Call clear local state function
         Invoke("FinishWallJump", wallJumpDuration);
@@ -87,23 +78,19 @@ public class PlayerWallJumping : MonoBehaviour
         rb.velocity = new Vector2(xDirection * wallJumpForce.x, wallJumpForce.y);
     }
 
-    private void HandleQueuedWallJumps()
-    {
-        if (wallJumpQueued && coyoteTimeCounter > 0f)
-        {
+    void HandleQueuedWallJumps() {
+        if (WallJumpQueued && CoyoteTimeCounter > 0f) {
             ClearWallJumpQueued();
             WallJump();
         }
     }
 
-    private void FinishWallJump()
-    {
+    void FinishWallJump() {
         // Update local state
-        isWallJumping = false;
+        IsWallJumping = false;
     }
 
-    private void ClearWallJumpQueued()
-    {
-        wallJumpQueued = false;
+    void ClearWallJumpQueued() {
+        WallJumpQueued = false;
     }
 }

@@ -2,75 +2,63 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerJumping : MonoBehaviour
-{
+public class PlayerJumping : MonoBehaviour {
     // Components
-    private PlayerSpriteState playerSpriteState;
-    private PlayerWallJumping playerWallJumping;
-    private Rigidbody2D rb;
-    private PlayerHelpers playerHelpers;
+    [SerializeField] PlayerSpriteState playerSpriteState;
+    [SerializeField] PlayerWallJumping playerWallJumping;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] PlayerHelpers playerHelpers;
 
     // Settings
-    [SerializeField] private float coyoteTime = 0.1f;
-    [SerializeField] private float queueDuration = 0.15f;
-    [SerializeField] private float jumpForce = 21f;
-    [SerializeField] private AudioSource jumpSound;
+    [SerializeField] float coyoteTime = 0.1f;
+    [SerializeField] float queueDuration = 0.15f;
+    [SerializeField] float jumpForce = 21f;
 
     // State
-    private float coyoteTimeCounter;
-    private bool jumpQueued = false;
+    float coyoteTimeCounter;
+    bool jumpQueued = false;
 
     // Event
     public event Action OnJumpTriggered;
 
-    private void Start()
-    {
-        playerSpriteState = GetComponent<PlayerSpriteState>();
-        playerWallJumping = GetComponent<PlayerWallJumping>();
-        rb = GetComponent<Rigidbody2D>();
-        playerHelpers = GetComponent<PlayerHelpers>();
-    }
-
-    private void Update()
-    {
+    void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedJumps();
     }
 
-    private void UpdateCoyoteTimeCounter()
-    {
-        if (playerHelpers.IsGrounded())
-        {
-            coyoteTimeCounter = coyoteTime;
-        }
-        else
-        {
-            coyoteTimeCounter -= Time.deltaTime;
+    public float CoyoteTimeCounter {
+        get { return coyoteTimeCounter; }
+        private set { coyoteTimeCounter = value; }
+    }
+
+    public bool JumpQueued {
+        get { return jumpQueued; }
+        private set { jumpQueued = value; }
+    }
+
+    void UpdateCoyoteTimeCounter() {
+        if (playerHelpers.IsGrounded()) {
+            CoyoteTimeCounter = coyoteTime;
+        } else {
+            CoyoteTimeCounter -= Time.deltaTime;
         }
     }
 
-    private void OnJump(InputValue value)
-    {
+    void OnJump(InputValue value) {
         bool buttonDown = value.Get<float>() == 1;
 
-        if (buttonDown && coyoteTimeCounter > 0f)
-        {
+        if (buttonDown && CoyoteTimeCounter > 0f) {
             Jump();
-        }
-        else if (buttonDown && playerHelpers.IsAlmostGrounded())
-        {
-            jumpQueued = true;
+        } else if (buttonDown && playerHelpers.IsAlmostGrounded()) {
+            JumpQueued = true;
             Invoke("ClearJumpQueued", queueDuration);
-        }
-        else if (!buttonDown && rb.velocity.y > 0.1f && !playerWallJumping.isWallJumping)
-        {
+        } else if (!buttonDown && rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
-            coyoteTimeCounter = 0f;
+            CoyoteTimeCounter = 0f;
         }
     }
 
-    private void Jump()
-    {
+    void Jump() {
         // Perform jump
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 
@@ -78,17 +66,14 @@ public class PlayerJumping : MonoBehaviour
         OnJumpTriggered?.Invoke();
     }
 
-    private void HandleQueuedJumps()
-    {
-        if (jumpQueued && coyoteTimeCounter > 0f)
-        {
+    void HandleQueuedJumps() {
+        if (JumpQueued && CoyoteTimeCounter > 0f) {
             ClearJumpQueued();
             Jump();
         }
     }
 
-    private void ClearJumpQueued()
-    {
-        jumpQueued = false;
+    void ClearJumpQueued() {
+        JumpQueued = false;
     }
 }

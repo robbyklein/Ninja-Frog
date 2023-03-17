@@ -1,65 +1,47 @@
 using System;
 using UnityEngine;
 
-public class PlayerTurning : MonoBehaviour
-{
+public class PlayerTurning : MonoBehaviour {
     // Other components
-    private PlayerMovement playerMovement;
+    [SerializeField] PlayerMovement playerMovement;
 
     // Settings
-    [SerializeField] private CameraFollowObject cameraFollowObject;
+    [SerializeField] CameraFollowObject cameraFollowObject;
 
     // State
-    public bool isFacingRight = true;
+    bool isFacingRight = true;
 
     // Event
     public event Action OnTurn;
 
-
-    void Start()
-    {
-        playerMovement = GetComponent<PlayerMovement>();
-    }
-
-    private void FixedUpdate()
-    {
-        if (playerMovement.movementInput.x > 0f || playerMovement.movementInput.x < 0f)
-        {
+    void FixedUpdate() {
+        if (playerMovement.MovementInput.x > 0f || playerMovement.MovementInput.x < 0f) {
             TurnCheck();
         }
     }
 
-    private void TurnCheck()
-    {
-        if (playerMovement.movementInput.x > 0 && !isFacingRight)
-        {
+    public bool IsFacingRight {
+        get { return isFacingRight; }
+        private set { isFacingRight = value; }
+    }
+
+    void TurnCheck() {
+        if (playerMovement.MovementInput.x > 0 && !IsFacingRight) {
             Turn();
-        }
-        else if (playerMovement.movementInput.x < 0 && isFacingRight)
-        {
+        } else if (playerMovement.MovementInput.x < 0 && IsFacingRight) {
             Turn();
         }
     }
 
-    private void Turn()
-    {
-        if (isFacingRight)
-        {
+    void Turn() {
+        if (IsFacingRight) {
             Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = !isFacingRight;
-
-            // Turn follow object also
-            //cameraFollowObject.CallTurn();
-        }
-        else
-        {
+            IsFacingRight = !IsFacingRight;
+        } else {
             Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = !isFacingRight;
-
-            // Turn follow object also
-            //cameraFollowObject.CallTurn();
+            IsFacingRight = !IsFacingRight;
         }
 
         OnTurn?.Invoke();

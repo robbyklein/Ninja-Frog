@@ -2,31 +2,21 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerDeath : MonoBehaviour
-{
+public class PlayerDeath : MonoBehaviour {
     // Components
-    private Animator anim;
-    private Rigidbody2D rb;
+    [SerializeField] Animator anim;
+    [SerializeField] Rigidbody2D rb;
 
     // Event
     public event Action OnDeath;
 
-    void Start()
-    {
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Kills"))
-        {
+    void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.CompareTag("Kills")) {
             Die();
         }
     }
 
-    private void Die()
-    {
+    void Die() {
         // Freeze movement
         rb.bodyType = RigidbodyType2D.Static;
 
@@ -37,9 +27,7 @@ public class PlayerDeath : MonoBehaviour
         OnDeath?.Invoke();
     }
 
-    private void RestartLevel()
-    {
+    void RestartLevel() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
     }
 }

@@ -1,29 +1,26 @@
 using UnityEngine;
 
-public class CameraFollowObject : MonoBehaviour
-{
-    [SerializeField] private float flipYRotationTime = 2f;
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private PlayerSpriteState playerSpriteState;
-    [SerializeField] private PlayerTurning playerTurning;
+public class CameraFollowObject : MonoBehaviour {
+    [SerializeField] float flipYRotationTime = 2f;
+    [SerializeField] Transform playerTransform;
+    [SerializeField] PlayerSpriteState playerSpriteState;
+    [SerializeField] PlayerTurning playerTurning;
 
-    private void Start()
-    {
+    void OnEnable() {
         playerTurning.OnTurn += CallTurn;
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Keep in sync with player
+    void OnDisable() {
+        playerTurning.OnTurn -= CallTurn;
+    }
+
+    void Update() {
         transform.position = playerTransform.position;
     }
 
-    public void CallTurn()
-    {
+    void CallTurn() {
         // Smooth turn camera pan
-        float endRotation = playerTurning.isFacingRight ? 0f : 180f;
+        float endRotation = playerTurning.IsFacingRight ? 0f : 180f;
         LeanTween.rotateY(gameObject, endRotation, flipYRotationTime).setEaseInOutSine();
     }
 }

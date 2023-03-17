@@ -1,34 +1,20 @@
 using UnityEngine;
 
-public class PlayerSliding : MonoBehaviour
-{
+public class PlayerSliding : MonoBehaviour {
     // Other components
-    private Rigidbody2D rb;
-    private PlayerWallJumping playerWallJumping;
-    private PlayerHelpers playerHelpers;
-    private PlayerTurning playerTurning;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] PlayerWallJumping playerWallJumping;
+    [SerializeField] PlayerHelpers playerHelpers;
 
     // Settings
-    [SerializeField] private float slideSpeed = 6f;
+    [SerializeField] float slideSpeed = 6f;
 
-
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        playerWallJumping = GetComponent<PlayerWallJumping>();
-        playerHelpers = GetComponent<PlayerHelpers>();
-        playerTurning = GetComponent<PlayerTurning>();
-    }
-
-    private void FixedUpdate()
-    {
+    void FixedUpdate() {
         HandleSliding();
     }
 
-    private void HandleSliding()
-    {
-        if (playerHelpers.IsWalled() && !playerWallJumping.isWallJumping)
-        {
+    void HandleSliding() {
+        if (playerHelpers.IsWalled() && !playerWallJumping.IsWallJumping) {
             rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
         }
     }

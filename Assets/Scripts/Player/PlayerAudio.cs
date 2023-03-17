@@ -1,43 +1,33 @@
 using UnityEngine;
 
-public class PlayerAudio : MonoBehaviour
-{
-    private PlayerJumping playerJumping;
-    private PlayerWallJumping playerWallJumping;
-    private PlayerDeath playerDeath;
-
-    private AudioSource audioSource;
-
+public class PlayerAudio : MonoBehaviour {
     // Settings
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip collectSound;
+    [SerializeField] PlayerJumping playerJumping;
+    [SerializeField] PlayerWallJumping playerWallJumping;
+    [SerializeField] PlayerDeath playerDeath;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioManager sounds;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-        playerJumping = GetComponent<PlayerJumping>();
-        playerWallJumping = GetComponent<PlayerWallJumping>();
-        playerDeath = GetComponent<PlayerDeath>();
-
-        // Subscribe to events
+    void OnEnable() {
         playerJumping.OnJumpTriggered += PlayJumpSound;
         playerWallJumping.OnWallJumpTriggered += PlayJumpSound;
         playerDeath.OnDeath += PlayDeathSound;
+    }
 
+    void OnDisable() {
+        playerJumping.OnJumpTriggered -= PlayJumpSound;
+        playerWallJumping.OnWallJumpTriggered -= PlayJumpSound;
+        playerDeath.OnDeath -= PlayDeathSound;
     }
 
     // Update is called once per frame
-    void PlayJumpSound()
-    {
-        audioSource.clip = jumpSound;
+    void PlayJumpSound() {
+        audioSource.clip = sounds.JumpSound;
         audioSource.Play();
     }
 
-    void PlayDeathSound()
-    {
-        audioSource.clip = deathSound;
+    void PlayDeathSound() {
+        audioSource.clip = sounds.DeathSound;
         audioSource.Play();
     }
 }

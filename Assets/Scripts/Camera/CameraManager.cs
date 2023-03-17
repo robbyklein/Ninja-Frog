@@ -8,20 +8,21 @@ public class CameraManager : MonoBehaviour
     public static CameraManager instance;
 
     // Settings
-    [SerializeField] private CinemachineVirtualCamera[] allVirtualCameras;
-    [SerializeField] private float fallPanAmount = 0.25f;
-    [SerializeField] private float fallYPanTime = 0.35f;
+    [SerializeField] CinemachineVirtualCamera[] allVirtualCameras;
+    [SerializeField] float fallPanAmount = 0.25f;
+    [SerializeField] float fallYPanTime = 0.35f;
     [SerializeField] public float fallSpeedYDampingChangeThreshold = -10f;
 
-    public bool IsLerpingYDamping { get; private set; }
-    public bool LerpedFromPlayerFalling { get; set; }
+    // State
+    bool isLerpingYDamping;
+    bool lerpedFromPlayerFalling;
 
-    private Coroutine lerpYPanCoroutine;
-    private CinemachineFramingTransposer framingTransposer;
-    private CinemachineVirtualCamera currentCamera;
-    private float normYPanAmount;
+    Coroutine lerpYPanCoroutine;
+    CinemachineFramingTransposer framingTransposer;
+    CinemachineVirtualCamera currentCamera;
+    float normYPanAmount;
 
-    private void Awake()
+    void Awake()
     {
         // Make singleton
         if (instance == null) instance = this;
@@ -40,6 +41,30 @@ public class CameraManager : MonoBehaviour
         normYPanAmount = framingTransposer.m_YDamping;
     }
 
+    public bool IsLerpingYDamping
+    {
+        get
+        {
+            return isLerpingYDamping;
+        }
+        private set
+        {
+            isLerpingYDamping = value;
+        }
+    }
+
+    public bool LerpedFromPlayerFalling
+    {
+        get
+        {
+            return lerpedFromPlayerFalling;
+        }
+        set
+        {
+            lerpedFromPlayerFalling = value;
+        }
+    }
+
     // Runs the coroutine
     public void LerpYDamping(bool isPlayerFalling)
     {
@@ -47,7 +72,7 @@ public class CameraManager : MonoBehaviour
     }
 
     // Shifts the camera smoothly / NFI
-    private IEnumerator LerpYAction(bool isPlayerFalling)
+    IEnumerator LerpYAction(bool isPlayerFalling)
     {
         IsLerpingYDamping = true;
 
