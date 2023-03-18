@@ -1,30 +1,26 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class FinishLevel : MonoBehaviour {
     // Settings
+    [SerializeField] AudioManager audioManager;
+    [SerializeField] AudioSource audioSource;
     [SerializeField] GameObject finishObject;
-    [SerializeField] FinishLevelAudio finishLevelAudio;
 
     // State
     bool levelCompleted = false;
 
-    // Event
-    public event Action OnLevelFinished;
-
-    void OnEnable() {
-        finishLevelAudio.OnSoundFinished += CompleteLevel;
-    }
-
-    void OnDisble() {
-        finishLevelAudio.OnSoundFinished -= CompleteLevel;
-    }
-
     void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.name == finishObject.name && !levelCompleted) {
             levelCompleted = true;
-            OnLevelFinished?.Invoke();
+
+            AudioClip clip = audioManager.FindSound("CollectSound");
+            audioSource.clip = clip;
+            audioSource.Play();
+
+            float delay = clip == null ? 1f : clip.length + 0.5f;
+
+            Invoke("CompleteLevel", delay);
         }
     }
 
