@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +16,10 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float accelerator = 1.2f;
 
     // Input state
-    Vector2 movementInput;
+    public Vector2 MovementInput { get; private set; }
+
+    // Event 
+    public event Action<Vector2> OnMovementChange;
 
     void FixedUpdate() {
         SetMaxVelocity();
@@ -35,18 +39,19 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public Vector2 MovementInput {
-        get { return movementInput; }
-        private set { movementInput = value; }
-    }
-
     void SetMaxVelocity() {
         float max = rb.velocity.y < 0f ? 30f : 35f;
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, max);
     }
 
     void OnMove(InputValue value) {
-        movementInput = value.Get<Vector2>();
+        Vector2 newInput = value.Get<Vector2>();
+
+        if (MovementInput != newInput) {
+            OnMovementChange?.Invoke(newInput);
+        }
+
+        MovementInput = newInput;
     }
 
     void Move() {

@@ -22,12 +22,20 @@ public class PlayerAudio : MonoBehaviour {
 
     // Update is called once per frame
     void PlayJumpSound() {
-        audioSource.clip = sounds.JumpSound;
-        audioSource.Play();
+        AudioClip clip = sounds.FindSound("JumpSound");
+
+        if (clip != null) {
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
     }
 
     void PlayDeathSound() {
-        audioSource.clip = sounds.DeathSound;
-        audioSource.Play();
+        AudioClip clip = sounds.FindSound("DeathSound");
+
+        if (clip != null) {
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
     }
 }

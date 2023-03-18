@@ -14,16 +14,18 @@ public class PlayerTurning : MonoBehaviour {
     // Event
     public event Action OnTurn;
 
-    void FixedUpdate() {
-        if (playerMovement.MovementInput.x > 0f || playerMovement.MovementInput.x < 0f) {
-            TurnCheck();
-        }
+    void OnEnable() {
+        playerMovement.OnMovementChange += TurnCheck;
     }
 
-    void TurnCheck() {
-        if (playerMovement.MovementInput.x > 0 && !IsFacingRight) {
+    void OnDisable() {
+        playerMovement.OnMovementChange -= TurnCheck;
+    }
+
+    void TurnCheck(Vector2 movementInput) {
+        if (movementInput.x > 0 && !IsFacingRight) {
             Turn();
-        } else if (playerMovement.MovementInput.x < 0 && IsFacingRight) {
+        } else if (movementInput.x < 0 && IsFacingRight) {
             Turn();
         }
     }

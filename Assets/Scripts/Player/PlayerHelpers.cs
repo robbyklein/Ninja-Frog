@@ -17,6 +17,16 @@ public class PlayerHelpers : MonoBehaviour {
     [SerializeField] float walledVelocityThreshold = 7f;
     static float boxCastAngle = 0f;
 
+    Vector2 movementInput;
+
+    void OnEnable() {
+        //subscribe
+    }
+
+    void setIt(Vector2 move) {
+        movementInput = move;
+    }
+
     // Types
     public enum WallDirection {
         Left,

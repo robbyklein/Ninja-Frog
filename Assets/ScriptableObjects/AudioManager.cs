@@ -1,27 +1,16 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerAudio", menuName = "ScriptableObjects/Manager/PlayerAudio")]
-public class AudioManager : ScriptableObject
-{
-    [SerializeField] AudioClip jumpSound;
-    [SerializeField] AudioClip deathSound;
-    [SerializeField] AudioClip collectSound;
+[CreateAssetMenu(fileName = "AudioManager", menuName = "ScriptableObjects/Manager/AudioManager")]
+public class AudioManager : ScriptableObject {
+    [SerializeField] AudioClip[] sounds;
 
-    public AudioClip JumpSound
-    {
-        get { return jumpSound; }
-    }
-
-    public AudioClip DeathSound
-    {
-        get
-        {
-            return deathSound;
+    public AudioClip FindSound(string name) {
+        for (int i = 0; i < sounds.Length; i++) {
+            if (sounds[i].name == name) {
+                return sounds[i];
+            }
         }
-    }
 
-    public AudioClip CollectSound
-    {
-        get { return collectSound; }
+        return null;
     }
 }
