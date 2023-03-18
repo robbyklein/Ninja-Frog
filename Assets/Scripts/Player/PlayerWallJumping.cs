@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 public class PlayerWallJumping : MonoBehaviour {
     // Components
     [SerializeField] Rigidbody2D rb;
@@ -14,9 +15,9 @@ public class PlayerWallJumping : MonoBehaviour {
     [SerializeField] private float coyoteTime = 0.1f;
 
     // State
-    float coyoteTimeCounter;
-    bool wallJumpQueued = false;
-    bool isWallJumping;
+    float CoyoteTimeCounter;
+    bool WallJumpQueued = false;
+    public bool IsWallJumping { get; private set; }
 
     // Event
     public event Action OnWallJumpTriggered;
@@ -24,21 +25,6 @@ public class PlayerWallJumping : MonoBehaviour {
     void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedWallJumps();
-    }
-
-    public bool IsWallJumping {
-        get { return isWallJumping; }
-        private set { isWallJumping = value; }
-    }
-
-    bool WallJumpQueued {
-        get { return wallJumpQueued; }
-        set { wallJumpQueued = value; }
-    }
-
-    float CoyoteTimeCounter {
-        get { return coyoteTimeCounter; }
-        set { coyoteTimeCounter = value; }
     }
 
     void OnJump(InputValue value) {

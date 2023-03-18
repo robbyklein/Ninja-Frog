@@ -15,8 +15,8 @@ public class PlayerJumping : MonoBehaviour {
     [SerializeField] float jumpForce = 21f;
 
     // State
-    float coyoteTimeCounter;
-    bool jumpQueued = false;
+    public float CoyoteTimeCounter { get; private set; }
+    public bool JumpQueued { get; private set; } = false;
 
     // Event
     public event Action OnJumpTriggered;
@@ -24,16 +24,6 @@ public class PlayerJumping : MonoBehaviour {
     void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedJumps();
-    }
-
-    public float CoyoteTimeCounter {
-        get { return coyoteTimeCounter; }
-        private set { coyoteTimeCounter = value; }
-    }
-
-    public bool JumpQueued {
-        get { return jumpQueued; }
-        private set { jumpQueued = value; }
     }
 
     void UpdateCoyoteTimeCounter() {

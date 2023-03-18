@@ -9,7 +9,7 @@ public class PlayerTurning : MonoBehaviour {
     [SerializeField] CameraFollowObject cameraFollowObject;
 
     // State
-    bool isFacingRight = true;
+    public bool IsFacingRight { get; private set; } = true;
 
     // Event
     public event Action OnTurn;
@@ -18,11 +18,6 @@ public class PlayerTurning : MonoBehaviour {
         if (playerMovement.MovementInput.x > 0f || playerMovement.MovementInput.x < 0f) {
             TurnCheck();
         }
-    }
-
-    public bool IsFacingRight {
-        get { return isFacingRight; }
-        private set { isFacingRight = value; }
     }
 
     void TurnCheck() {
