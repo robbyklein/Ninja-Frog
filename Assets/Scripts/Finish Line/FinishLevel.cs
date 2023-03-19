@@ -20,7 +20,7 @@ public class FinishLevel : MonoBehaviour {
 
             float delay = clip == null ? 1f : clip.length + 0.5f;
 
-            Invoke("CompleteLevel", delay);
+            //Invoke("CompleteLevel", delay);
         }
     }
 

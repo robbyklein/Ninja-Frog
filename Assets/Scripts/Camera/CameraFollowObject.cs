@@ -4,23 +4,23 @@ public class CameraFollowObject : MonoBehaviour {
     [SerializeField] float flipYRotationTime = 2f;
     [SerializeField] Transform playerTransform;
     [SerializeField] PlayerSpriteState playerSpriteState;
-    [SerializeField] PlayerTurning playerTurning;
+    [SerializeField] PlayerMovement playerMovement;
 
     void OnEnable() {
-        playerTurning.OnTurn += CallTurn;
+        playerMovement.OnPlayerTurn += CallTurn;
     }
 
     void OnDisable() {
-        playerTurning.OnTurn -= CallTurn;
+        playerMovement.OnPlayerTurn -= CallTurn;
     }
 
     void Update() {
         transform.position = playerTransform.position;
     }
 
-    void CallTurn() {
+    void CallTurn(bool isFacingRight) {
         // Smooth turn camera pan
-        float endRotation = playerTurning.IsFacingRight ? 0f : 180f;
+        float endRotation = isFacingRight ? 0f : 180f;
         LeanTween.rotateY(gameObject, endRotation, flipYRotationTime).setEaseInOutSine();
     }
 }

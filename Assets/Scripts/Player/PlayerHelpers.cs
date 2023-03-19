@@ -6,7 +6,6 @@ public class PlayerHelpers : MonoBehaviour {
     [SerializeField] Animator anim;
     [SerializeField] BoxCollider2D coll;
     [SerializeField] PlayerMovement playerMovement;
-    [SerializeField] PlayerTurning playerTurning;
 
     // Settings
     [SerializeField] LayerMask jumpableGround;
@@ -16,16 +15,6 @@ public class PlayerHelpers : MonoBehaviour {
     [SerializeField] const float closestBoxCastDistance = 3f;
     [SerializeField] float walledVelocityThreshold = 7f;
     static float boxCastAngle = 0f;
-
-    Vector2 movementInput;
-
-    void OnEnable() {
-        //subscribe
-    }
-
-    void setIt(Vector2 move) {
-        movementInput = move;
-    }
 
     // Types
     public enum WallDirection {
@@ -47,13 +36,13 @@ public class PlayerHelpers : MonoBehaviour {
     }
 
     public bool IsWalled() {
-        Vector2 direction = !playerTurning.IsFacingRight ? Vector2.left : Vector2.right;
+        Vector2 direction = !playerMovement.IsFacingRight ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, boxCastDistance, jumpableWalls);
         return onWall && !IsGrounded() && playerMovement.MovementInput.x != 0f && rb.velocity.y < walledVelocityThreshold;
     }
 
     public bool IsAlmostWalled() {
-        Vector2 direction = !playerTurning.IsFacingRight ? Vector2.left : Vector2.right;
+        Vector2 direction = !playerMovement.IsFacingRight ? Vector2.left : Vector2.right;
         bool onWall = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, boxCastAngle, direction, almostBoxCastDistance, jumpableWalls);
         return onWall && !IsGrounded() && playerMovement.MovementInput.x != 0f;
     }

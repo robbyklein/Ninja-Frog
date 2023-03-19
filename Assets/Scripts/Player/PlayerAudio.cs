@@ -9,18 +9,17 @@ public class PlayerAudio : MonoBehaviour {
     [SerializeField] AudioManager sounds;
 
     void OnEnable() {
-        playerJumping.OnJumpTriggered += PlayJumpSound;
-        playerWallJumping.OnWallJumpTriggered += PlayJumpSound;
+        playerJumping.OnJump += PlayJumpSound;
+        playerWallJumping.OnWallJump += PlayJumpSound;
         playerDeath.OnDeath += PlayDeathSound;
     }
 
     void OnDisable() {
-        playerJumping.OnJumpTriggered -= PlayJumpSound;
-        playerWallJumping.OnWallJumpTriggered -= PlayJumpSound;
+        playerJumping.OnJump -= PlayJumpSound;
+        playerWallJumping.OnWallJump -= PlayJumpSound;
         playerDeath.OnDeath -= PlayDeathSound;
     }
 
-    // Update is called once per frame
     void PlayJumpSound() {
         AudioClip clip = sounds.FindSound("JumpSound");
 

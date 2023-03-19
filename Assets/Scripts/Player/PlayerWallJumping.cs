@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 public class PlayerWallJumping : MonoBehaviour {
     // Components
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerHelpers playerHelpers;
+    [SerializeField] PlayerInput playerInput;
 
     // Settings
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
@@ -20,19 +20,25 @@ public class PlayerWallJumping : MonoBehaviour {
     public bool IsWallJumping { get; private set; }
 
     // Event
-    public event Action OnWallJumpTriggered;
+    public event Action OnWallJump;
+
+    void OnEnable() {
+        playerInput.OnJumpPress += HandleJumpPress;
+    }
+
+    void OnDisable() {
+        playerInput.OnJumpPress -= HandleJumpPress;
+    }
 
     void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedWallJumps();
     }
 
-    void OnJump(InputValue value) {
-        bool buttonDown = value.Get<float>() == 1;
-
-        if (buttonDown && CoyoteTimeCounter > 0f) {
+    void HandleJumpPress() {
+        if (CoyoteTimeCounter > 0f) {
             WallJump();
-        } else if (buttonDown && playerHelpers.IsAlmostWalled()) {
+        } else if (playerHelpers.IsAlmostWalled()) {
             WallJumpQueued = true;
             Invoke("ClearWallJumpQueued", queueDuration);
         }
@@ -54,7 +60,7 @@ public class PlayerWallJumping : MonoBehaviour {
         Invoke("FinishWallJump", wallJumpDuration);
 
         // Broadcast event
-        OnWallJumpTriggered?.Invoke();
+        OnWallJump?.Invoke();
 
         // Figure out direction
         PlayerHelpers.WallDirection closestWall = playerHelpers.ClosestWallDirection();
