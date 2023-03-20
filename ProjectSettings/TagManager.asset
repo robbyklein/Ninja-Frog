@@ -15,7 +15,7 @@ TagManager:
   - Ground
   - Walls
   - Boundries
-  - 
+  - Foreground
   - 
   - 
   - 
@@ -50,4 +50,7 @@ TagManager:
     locked: 0
   - name: Terrain
     uniqueID: 312038065
+    locked: 0
+  - name: Foreground
+    uniqueID: 1260613679
     locked: 0

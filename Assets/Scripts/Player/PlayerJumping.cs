@@ -15,11 +15,22 @@ public class PlayerJumping : MonoBehaviour {
     [SerializeField] float jumpForce = 21f;
 
     // State
+    InputActions Input;
     public float CoyoteTimeCounter { get; private set; }
     public bool JumpQueued { get; private set; } = false;
 
     // Event
     public event Action OnJumpTriggered;
+
+    void Awake() {
+        Input = new InputActions();
+    }
+
+    void OnEnable() {
+        Input.Player.Jump.performed += OnJump;
+        Input.Player.Jump.canceled += OnJumpRelease;
+        Input.Player.Jump.Enable();
+    }
 
     void Update() {
         UpdateCoyoteTimeCounter();
@@ -34,19 +45,23 @@ public class PlayerJumping : MonoBehaviour {
         }
     }
 
-    void OnJump(InputValue value) {
-        bool buttonDown = value.Get<float>() == 1;
 
-        if (buttonDown && CoyoteTimeCounter > 0f) {
+    void OnJump(InputAction.CallbackContext obj) {
+        if (CoyoteTimeCounter > 0f) {
             Jump();
-        } else if (buttonDown && playerHelpers.IsAlmostGrounded()) {
+        } else if (playerHelpers.IsAlmostGrounded()) {
             JumpQueued = true;
             Invoke("ClearJumpQueued", queueDuration);
-        } else if (!buttonDown && rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
+        }
+    }
+
+    void OnJumpRelease(InputAction.CallbackContext obj) {
+        if (rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
             CoyoteTimeCounter = 0f;
         }
     }
+
 
     void Jump() {
         // Perform jump
