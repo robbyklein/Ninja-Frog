@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerJumping : MonoBehaviour {
     // Components
@@ -8,6 +7,7 @@ public class PlayerJumping : MonoBehaviour {
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerHelpers playerHelpers;
+    [SerializeField] PlayerInput playerInput;
 
     // Settings
     [SerializeField] float coyoteTime = 0.1f;
@@ -15,22 +15,23 @@ public class PlayerJumping : MonoBehaviour {
     [SerializeField] float jumpForce = 21f;
 
     // State
-    InputActions Input;
     public float CoyoteTimeCounter { get; private set; }
     public bool JumpQueued { get; private set; } = false;
 
     // Event
     public event Action OnJumpTriggered;
 
-    void Awake() {
-        Input = new InputActions();
-    }
 
     void OnEnable() {
-        Input.Player.Jump.performed += OnJump;
-        Input.Player.Jump.canceled += OnJumpRelease;
-        Input.Player.Jump.Enable();
+        playerInput.OnJump += OnJump;
+        playerInput.OnJumpRelease += OnJumpRelease;
     }
+
+    void OnDisable() {
+        playerInput.OnJump -= OnJump;
+        playerInput.OnJumpRelease -= OnJumpRelease;
+    }
+
 
     void Update() {
         UpdateCoyoteTimeCounter();
@@ -46,7 +47,7 @@ public class PlayerJumping : MonoBehaviour {
     }
 
 
-    void OnJump(InputAction.CallbackContext obj) {
+    void OnJump() {
         if (CoyoteTimeCounter > 0f) {
             Jump();
         } else if (playerHelpers.IsAlmostGrounded()) {
@@ -55,7 +56,7 @@ public class PlayerJumping : MonoBehaviour {
         }
     }
 
-    void OnJumpRelease(InputAction.CallbackContext obj) {
+    void OnJumpRelease() {
         if (rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
             CoyoteTimeCounter = 0f;

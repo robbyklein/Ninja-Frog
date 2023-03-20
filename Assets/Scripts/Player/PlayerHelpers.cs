@@ -6,7 +6,6 @@ public class PlayerHelpers : MonoBehaviour {
     [SerializeField] Animator anim;
     [SerializeField] BoxCollider2D coll;
     [SerializeField] PlayerMovement playerMovement;
-    [SerializeField] PlayerTurning playerTurning;
 
     // Settings
     [SerializeField] LayerMask jumpableGround;

@@ -1,23 +1,41 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour {
-    InputActions Inputs;
+    // Inputs
+    InputActions Input;
 
-    Vector2 Movement = Vector2.zero;
+    // Events
+    public event Action<Vector2> OnMovementChange;
+    public event Action OnJump;
+    public event Action OnJumpRelease;
 
-    private void Awake() {
-        Inputs = new InputActions();
+    void Awake() {
+        Input = new InputActions();
     }
 
     void OnEnable() {
-        Inputs.Player.Movement.Enable();
+        // Movement
+        Input.Player.Movement.performed += MovementChanged;
+        Input.Player.Movement.canceled += MovementChanged;
+        Input.Player.Movement.Enable();
+
+        // Jumping
+        Input.Player.Jump.performed += JumpPressed;
+        Input.Player.Jump.canceled += JumpReleased;
+        Input.Player.Jump.Enable();
     }
 
-    void OnDisable() {
-        Inputs.Player.Movement.Disable();
+    void MovementChanged(InputAction.CallbackContext obj) {
+        OnMovementChange?.Invoke(obj.ReadValue<Vector2>());
     }
 
-    void UpdateMovement() {
+    void JumpPressed(InputAction.CallbackContext obj) {
+        OnJump?.Invoke();
     }
 
+    void JumpReleased(InputAction.CallbackContext obj) {
+        OnJumpRelease?.Invoke();
+    }
 }

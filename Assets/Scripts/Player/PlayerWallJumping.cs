@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 public class PlayerWallJumping : MonoBehaviour {
     // Components
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerHelpers playerHelpers;
+    [SerializeField] PlayerInput playerInput;
 
     // Settings
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
@@ -22,17 +22,23 @@ public class PlayerWallJumping : MonoBehaviour {
     // Event
     public event Action OnWallJumpTriggered;
 
+    void OnEnable() {
+        playerInput.OnJump += OnJump;
+    }
+
+    void OnDisable() {
+        playerInput.OnJump -= OnJump;
+    }
+
     void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedWallJumps();
     }
 
-    void OnJump(InputValue value) {
-        bool buttonDown = value.Get<float>() == 1;
-
-        if (buttonDown && CoyoteTimeCounter > 0f) {
+    void OnJump() {
+        if (CoyoteTimeCounter > 0f) {
             WallJump();
-        } else if (buttonDown && playerHelpers.IsAlmostWalled()) {
+        } else if (playerHelpers.IsAlmostWalled()) {
             WallJumpQueued = true;
             Invoke("ClearWallJumpQueued", queueDuration);
         }

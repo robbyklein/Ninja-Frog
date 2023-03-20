@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour {
     #region Fields
@@ -10,6 +9,7 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] PlayerJumping playerJumping;
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] CameraManager cameraManager;
+    [SerializeField] PlayerInput playerInput;
 
     // Settings
     [SerializeField] private float maxMovementSpeed = 20f;
@@ -18,28 +18,11 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float accelerator = 1.2f;
     #endregion
 
-    // Input state
-    InputActions Input;
     public Vector2 MovementInput { get; private set; }
     public bool IsFacingRight { get; private set; } = true;
 
     // Events
     public event Action<bool> OnPlayerTurn;
-
-    void FixedUpdate() {
-        SetMaxVelocity();
-        Move();
-    }
-
-    void Awake() {
-        Input = new InputActions();
-    }
-
-    void OnEnable() {
-        Input.Player.Movement.performed += MovementInputChanged;
-        Input.Player.Movement.canceled += MovementInputChanged;
-        Input.Player.Movement.Enable();
-    }
 
     void Update() {
         if (
@@ -60,19 +43,31 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    void MovementInputChanged(InputAction.CallbackContext obj) {
-        Vector2 newMovementInput = obj.ReadValue<Vector2>();
+    void FixedUpdate() {
+        SetMaxVelocity();
+        Move();
+    }
 
+    void OnEnable() {
+        playerInput.OnMovementChange += MovementInputChanged;
+    }
+
+    void OnDisable() {
+        playerInput.OnMovementChange -= MovementInputChanged;
+    }
+
+    void MovementInputChanged(Vector2 newMovementInput) {
         if (newMovementInput.x != 0f) {
             bool newIsFacingRight = newMovementInput.x > 0f;
 
             if (newIsFacingRight != IsFacingRight) {
                 IsFacingRight = newIsFacingRight;
+                Turn();
                 OnPlayerTurn?.Invoke(IsFacingRight);
             }
         }
 
-        MovementInput = obj.ReadValue<Vector2>();
+        MovementInput = newMovementInput;
     }
 
     void SetMaxVelocity() {
@@ -93,5 +88,15 @@ public class PlayerMovement : MonoBehaviour {
             rb.AddForce(force * Time.deltaTime);
         }
 
+    }
+
+    void Turn() {
+        if (!IsFacingRight) {
+            Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(rotator);
+        } else {
+            Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(rotator);
+        }
     }
 }
