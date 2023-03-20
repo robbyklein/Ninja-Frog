@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
-    #region Fields
     // Other components
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerSpriteState playerSpriteState;
@@ -10,13 +9,14 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] CameraManager cameraManager;
     [SerializeField] PlayerInput playerInput;
+    [SerializeField] PlayerHelpers playerHelpers;
 
     // Settings
     [SerializeField] private float maxMovementSpeed = 20f;
     [SerializeField] private float accelerationSpeed = 5f;
     [SerializeField] private float decelerationSpeed = 10f;
     [SerializeField] private float accelerator = 1.2f;
-    #endregion
+    [SerializeField] float slideSpeed = 6f;
 
     public Vector2 MovementInput { get; private set; }
     public bool IsFacingRight { get; private set; } = true;
@@ -46,17 +46,18 @@ public class PlayerMovement : MonoBehaviour {
     void FixedUpdate() {
         SetMaxVelocity();
         Move();
+        Slide();
     }
 
     void OnEnable() {
-        playerInput.OnMovementChange += MovementInputChanged;
+        playerInput.OnMovementChange += HandleMovement;
     }
 
     void OnDisable() {
-        playerInput.OnMovementChange -= MovementInputChanged;
+        playerInput.OnMovementChange -= HandleMovement;
     }
 
-    void MovementInputChanged(Vector2 newMovementInput) {
+    void HandleMovement(Vector2 newMovementInput) {
         if (newMovementInput.x != 0f) {
             bool newIsFacingRight = newMovementInput.x > 0f;
 
@@ -97,6 +98,12 @@ public class PlayerMovement : MonoBehaviour {
         } else {
             Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
             transform.rotation = Quaternion.Euler(rotator);
+        }
+    }
+
+    void Slide() {
+        if (playerHelpers.IsWalled() && !playerWallJumping.IsWallJumping) {
+            rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
         }
     }
 }

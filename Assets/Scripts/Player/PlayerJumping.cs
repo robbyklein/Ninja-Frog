@@ -19,23 +19,37 @@ public class PlayerJumping : MonoBehaviour {
     public bool JumpQueued { get; private set; } = false;
 
     // Event
-    public event Action OnJumpTriggered;
-
+    public event Action OnJump;
 
     void OnEnable() {
-        playerInput.OnJump += OnJump;
-        playerInput.OnJumpRelease += OnJumpRelease;
+        playerInput.OnJumpPress += HandleJumpPress;
+        playerInput.OnJumpRelease += HandleJumpRelease;
     }
 
     void OnDisable() {
-        playerInput.OnJump -= OnJump;
-        playerInput.OnJumpRelease -= OnJumpRelease;
+        playerInput.OnJumpPress -= HandleJumpPress;
+        playerInput.OnJumpRelease -= HandleJumpRelease;
     }
-
 
     void Update() {
         UpdateCoyoteTimeCounter();
         HandleQueuedJumps();
+    }
+
+    void HandleJumpPress() {
+        if (CoyoteTimeCounter > 0f) {
+            Jump();
+        } else if (playerHelpers.IsAlmostGrounded()) {
+            JumpQueued = true;
+            Invoke("ClearJumpQueued", queueDuration);
+        }
+    }
+
+    void HandleJumpRelease() {
+        if (rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
+            CoyoteTimeCounter = 0f;
+        }
     }
 
     void UpdateCoyoteTimeCounter() {
@@ -46,30 +60,9 @@ public class PlayerJumping : MonoBehaviour {
         }
     }
 
-
-    void OnJump() {
-        if (CoyoteTimeCounter > 0f) {
-            Jump();
-        } else if (playerHelpers.IsAlmostGrounded()) {
-            JumpQueued = true;
-            Invoke("ClearJumpQueued", queueDuration);
-        }
-    }
-
-    void OnJumpRelease() {
-        if (rb.velocity.y > 0.1f && !playerWallJumping.IsWallJumping) {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.75f);
-            CoyoteTimeCounter = 0f;
-        }
-    }
-
-
     void Jump() {
-        // Perform jump
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
-        // Play sound effect
-        OnJumpTriggered?.Invoke();
+        OnJump?.Invoke();
     }
 
     void HandleQueuedJumps() {

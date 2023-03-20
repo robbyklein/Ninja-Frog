@@ -20,14 +20,14 @@ public class PlayerWallJumping : MonoBehaviour {
     public bool IsWallJumping { get; private set; }
 
     // Event
-    public event Action OnWallJumpTriggered;
+    public event Action OnWallJump;
 
     void OnEnable() {
-        playerInput.OnJump += OnJump;
+        playerInput.OnJumpPress += HandleJumpPress;
     }
 
     void OnDisable() {
-        playerInput.OnJump -= OnJump;
+        playerInput.OnJumpPress -= HandleJumpPress;
     }
 
     void Update() {
@@ -35,7 +35,7 @@ public class PlayerWallJumping : MonoBehaviour {
         HandleQueuedWallJumps();
     }
 
-    void OnJump() {
+    void HandleJumpPress() {
         if (CoyoteTimeCounter > 0f) {
             WallJump();
         } else if (playerHelpers.IsAlmostWalled()) {
@@ -60,7 +60,7 @@ public class PlayerWallJumping : MonoBehaviour {
         Invoke("FinishWallJump", wallJumpDuration);
 
         // Broadcast event
-        OnWallJumpTriggered?.Invoke();
+        OnWallJump?.Invoke();
 
         // Figure out direction
         PlayerHelpers.WallDirection closestWall = playerHelpers.ClosestWallDirection();

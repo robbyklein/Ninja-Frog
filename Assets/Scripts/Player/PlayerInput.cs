@@ -8,7 +8,7 @@ public class PlayerInput : MonoBehaviour {
 
     // Events
     public event Action<Vector2> OnMovementChange;
-    public event Action OnJump;
+    public event Action OnJumpPress;
     public event Action OnJumpRelease;
 
     void Awake() {
@@ -32,7 +32,7 @@ public class PlayerInput : MonoBehaviour {
     }
 
     void JumpPressed(InputAction.CallbackContext obj) {
-        OnJump?.Invoke();
+        OnJumpPress?.Invoke();
     }
 
     void JumpReleased(InputAction.CallbackContext obj) {
