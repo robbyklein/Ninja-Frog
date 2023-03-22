@@ -27,8 +27,7 @@ public class PlayerAudio : MonoBehaviour {
         AudioClip clip = sounds.FindSound("JumpSound");
 
         if (clip != null) {
-            audioSource.clip = clip;
-            audioSource.Play();
+            audioSource.PlayOneShot(clip);
         }
     }
 
@@ -36,8 +35,7 @@ public class PlayerAudio : MonoBehaviour {
         AudioClip clip = sounds.FindSound("DeathSound");
 
         if (clip != null) {
-            audioSource.clip = clip;
-            audioSource.Play();
+            audioSource.PlayOneShot(clip);
         }
     }
 
@@ -45,8 +43,7 @@ public class PlayerAudio : MonoBehaviour {
         AudioClip clip = sounds.FindSound("CollectSound");
 
         if (clip != null) {
-            audioSource.clip = clip;
-            audioSource.Play();
+            audioSource.PlayOneShot(clip);
         }
     }
 }
