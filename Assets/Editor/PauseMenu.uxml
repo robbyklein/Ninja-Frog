@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Editor/PauseMenu.uss?fileID=7433441132597879392&amp;guid=851a83608e9a9924782aeb8298aca304&amp;type=3#PauseMenu" />
+    <ui:VisualElement name="background" style="height: 100%; align-items: center; justify-content: center; -unity-font-definition: initial;">
+        <ui:VisualElement name="pause-wrapper" style="max-width: 400px; width: 100%; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/TextMesh%20Pro/Fonts/pixChicago.ttf?fileID=12800000&amp;guid=f3fb6eba79322a44ba216799170088fa&amp;type=3#pixChicago&apos;);">
+            <ui:Label text="PAUSE" name="heading" enable-rich-text="true" usage-hints="None" class="h1" />
+            <ui:VisualElement name="pause-buttons">
+                <ui:Button text="RESUME" display-tooltip-when-elided="true" name="resume" class="menu-item" />
+                <ui:Button text="MAIN MENU" display-tooltip-when-elided="true" name="main-menu" class="menu-item middle" />
+                <ui:Button text="QUIT" display-tooltip-when-elided="true" name="quit" class="menu-item" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

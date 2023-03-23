@@ -1,9 +1,7 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour {
-    [SerializeField] SceneAsset pauseScene;
     [SerializeField] PlayerInput playerInput;
 
     bool SceneActive = false;
@@ -22,7 +20,7 @@ public class PauseManager : MonoBehaviour {
 
     void HandlePausePress() {
         if (!SceneActive) {
-            SceneManager.LoadScene(pauseScene.name, LoadSceneMode.Additive);
+            SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
             playerInput.ChangeActionMap(playerInput.Input.Menus);
         }
 
@@ -34,8 +32,12 @@ public class PauseManager : MonoBehaviour {
     }
 
     void HandleClose() {
-        playerInput.ChangeActionMap(playerInput.Input.Player);
-        SceneManager.UnloadSceneAsync(pauseScene.name);
+        Close();
+    }
+
+    public void Close() {
+        if (playerInput) playerInput.ChangeActionMap(playerInput.Input.Player);
+        SceneManager.UnloadSceneAsync("Pause");
         SceneActive = !SceneActive;
     }
 }

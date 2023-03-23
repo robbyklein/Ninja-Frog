@@ -1,0 +1,35 @@
+#background {
+    background-color: #000000;
+}
+
+#pause-wrapper {
+    -unity-text-align: upper-center;
+    -unity-font: resource("Assets/TextMesh Pro/Fonts/pixChicago.asset");
+    -unity-font-definition: initial;
+}
+ 
+.h1 {
+    font-size: 48px;
+    -unity-font-style: bold;
+    color: #fcba03;
+}
+
+#pause-buttons {
+    margin-top: 20px;
+}
+
+.menu-item {
+    background-color: #ffffff;
+    color: #000000;
+    border-width: 0;
+    border-radius: 0;
+    height: 50px;
+    -unity-font-style: bold;
+    font-size: 16px;
+}
+
+.menu-item.middle {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+

@@ -24,18 +24,23 @@ public class PlayerInput : MonoBehaviour {
         // Player Movement
         Input.Player.Movement.performed += MovementChanged;
         Input.Player.Movement.canceled += MovementChanged;
+        Input.Player.Movement.Enable();
+
         Input.Player.Jump.performed += JumpPressed;
         Input.Player.Jump.canceled += JumpReleased;
+        Input.Player.Jump.Enable();
+
         Input.Player.Start.performed += StartPressed;
-        Input.Player.Enable();
+        Input.Player.Start.Enable();
+
 
         // Menus
         Input.Menus.Movement.performed += MenusMovementChanged;
         Input.Menus.Close.performed += MenusClosePressed;
-
     }
 
     void MovementChanged(InputAction.CallbackContext obj) {
+        Debug.Log("eyyyy");
         OnMovementChange?.Invoke(obj.ReadValue<Vector2>());
     }
 
