@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AudioManager", menuName = "ScriptableObjects/Manager/AudioManager")]
+[CreateAssetMenu(fileName = "AudioManager", menuName = "ScriptableObjects/Managers/AudioManager")]
 public class AudioManager : ScriptableObject {
     [SerializeField] AudioClip[] sounds;
 

@@ -28,6 +28,10 @@
     font-size: 16px;
 }
 
+.menu-item.menu-item-active {
+    background-color: #fcba03;
+}
+
 .menu-item.middle {
     margin-top: 20px;
     margin-bottom: 20px;

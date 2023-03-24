@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b2ab84288b2c2141960770f8d93f385, type: 3}
   m_Name: PauseManager
   m_EditorClassIdentifier: 
-  playerInput: {fileID: 0}
+  playerInput: {fileID: 11400000, guid: 694904246f22c7146931b2a431e7f86f, type: 2}

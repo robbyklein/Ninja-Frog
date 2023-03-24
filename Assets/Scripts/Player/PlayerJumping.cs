@@ -7,7 +7,7 @@ public class PlayerJumping : MonoBehaviour {
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerHelpers playerHelpers;
-    [SerializeField] PlayerInput playerInput;
+    [SerializeField] PlayerInputManager playerInput;
 
     // Settings
     [SerializeField] float coyoteTime = 0.1f;

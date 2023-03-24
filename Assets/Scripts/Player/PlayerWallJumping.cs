@@ -6,7 +6,7 @@ public class PlayerWallJumping : MonoBehaviour {
     // Components
     [SerializeField] Rigidbody2D rb;
     [SerializeField] PlayerHelpers playerHelpers;
-    [SerializeField] PlayerInput playerInput;
+    [SerializeField] PlayerInputManager playerInput;
 
     // Settings
     [SerializeField] private Vector2 wallJumpForce = new Vector2(15f, 21f);
