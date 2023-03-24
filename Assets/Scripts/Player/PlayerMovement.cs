@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] PlayerJumping playerJumping;
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] CameraManager cameraManager;
-    [SerializeField] PlayerInput playerInput;
+    [SerializeField] PlayerInputManager playerInput;
     [SerializeField] PlayerHelpers playerHelpers;
 
     // Settings

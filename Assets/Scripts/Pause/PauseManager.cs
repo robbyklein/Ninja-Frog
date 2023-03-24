@@ -1,22 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseManager : MonoBehaviour {
-    [SerializeField] PlayerInput playerInput;
+[CreateAssetMenu(fileName = "Pause Manager", menuName = "ScriptableObjects/Managers/PauseManager")]
+public class PauseManager : ScriptableObject {
+    [SerializeField] PlayerInputManager playerInput;
 
     bool SceneActive = false;
 
-    void OnEnable() {
-        playerInput.OnStartPress += HandlePausePress;
-        playerInput.OnMenusMovementChanged += HandleMenuMovement;
-        playerInput.OnMenusClosePress += HandleClose;
-    }
-
-    void OnDisable() {
-        playerInput.OnStartPress -= HandlePausePress;
-        playerInput.OnMenusMovementChanged -= HandleMenuMovement;
-        playerInput.OnMenusClosePress -= HandleClose;
-    }
+    void OnEnable() => HandleSubscriptions();
+    void OnDisable() => HandleUnSubscriptions();
 
     void HandlePausePress() {
         if (!SceneActive) {
@@ -39,6 +31,18 @@ public class PauseManager : MonoBehaviour {
         if (playerInput) playerInput.ChangeActionMap(playerInput.Input.Player);
         SceneManager.UnloadSceneAsync("Pause");
         SceneActive = !SceneActive;
+    }
+
+    void HandleSubscriptions() {
+        playerInput.OnStartPress += HandlePausePress;
+        playerInput.OnMenusMovementChanged += HandleMenuMovement;
+        playerInput.OnMenusClosePress += HandleClose;
+    }
+
+    void HandleUnSubscriptions() {
+        playerInput.OnStartPress -= HandlePausePress;
+        playerInput.OnMenusMovementChanged -= HandleMenuMovement;
+        playerInput.OnMenusClosePress -= HandleClose;
     }
 }
 
