@@ -19,7 +19,6 @@ public class PauseManager : ScriptableObject {
 
     void HandleStartPress() {
         if (!SceneActive) {
-            Debug.Log("Start pressed! we need to load scene" + playerInput.Input.Player.enabled);
             playerInput.ChangeActionMap(playerInput.Input.Menus);
             SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
         }
