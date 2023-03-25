@@ -200,15 +200,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Close"",
-                    ""type"": ""Button"",
-                    ""id"": ""c8724552-4909-4846-86e5-8273274bc383"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -321,28 +312,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5b591b62-0992-4418-89c7-556ae22c4281"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Close"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""06d54918-7c70-4f6d-ad9a-de4bf3b271bf"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Close"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -358,7 +327,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Menus = asset.FindActionMap("Menus", throwIfNotFound: true);
         m_Menus_Movement = m_Menus.FindAction("Movement", throwIfNotFound: true);
         m_Menus_Select = m_Menus.FindAction("Select", throwIfNotFound: true);
-        m_Menus_Close = m_Menus.FindAction("Close", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -484,14 +452,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private List<IMenusActions> m_MenusActionsCallbackInterfaces = new List<IMenusActions>();
     private readonly InputAction m_Menus_Movement;
     private readonly InputAction m_Menus_Select;
-    private readonly InputAction m_Menus_Close;
     public struct MenusActions
     {
         private @InputActions m_Wrapper;
         public MenusActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Menus_Movement;
         public InputAction @Select => m_Wrapper.m_Menus_Select;
-        public InputAction @Close => m_Wrapper.m_Menus_Close;
         public InputActionMap Get() { return m_Wrapper.m_Menus; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -507,9 +473,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Select.started += instance.OnSelect;
             @Select.performed += instance.OnSelect;
             @Select.canceled += instance.OnSelect;
-            @Close.started += instance.OnClose;
-            @Close.performed += instance.OnClose;
-            @Close.canceled += instance.OnClose;
         }
 
         private void UnregisterCallbacks(IMenusActions instance)
@@ -520,9 +483,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Select.started -= instance.OnSelect;
             @Select.performed -= instance.OnSelect;
             @Select.canceled -= instance.OnSelect;
-            @Close.started -= instance.OnClose;
-            @Close.performed -= instance.OnClose;
-            @Close.canceled -= instance.OnClose;
         }
 
         public void RemoveCallbacks(IMenusActions instance)
@@ -550,6 +510,5 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
-        void OnClose(InputAction.CallbackContext context);
     }
 }

@@ -178,15 +178,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Close",
-                    "type": "Button",
-                    "id": "c8724552-4909-4846-86e5-8273274bc383",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -297,28 +288,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5b591b62-0992-4418-89c7-556ae22c4281",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Close",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "06d54918-7c70-4f6d-ad9a-de4bf3b271bf",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Close",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

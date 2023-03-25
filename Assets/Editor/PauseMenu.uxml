@@ -4,9 +4,9 @@
         <ui:VisualElement name="content" class="content" style="-unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/TextMesh%20Pro/Fonts/pixChicago.ttf?fileID=12800000&amp;guid=f3fb6eba79322a44ba216799170088fa&amp;type=3#pixChicago&apos;);">
             <ui:Label text="PAUSE" name="heading" enable-rich-text="true" usage-hints="None" class="heading buttons" />
             <ui:VisualElement name="pause-buttons">
-                <ui:Button text="RESUME" display-tooltip-when-elided="true" name="resume" class="menu-item menu-item-active" />
-                <ui:Button text="MAIN MENU" display-tooltip-when-elided="true" name="main-menu" class="menu-item middle" />
-                <ui:Button text="QUIT" display-tooltip-when-elided="true" name="quit" class="menu-item" />
+                <ui:Button text="RESUME" display-tooltip-when-elided="true" name="Resume" class="menu-item menu-item-active" />
+                <ui:Button text="MAIN MENU" display-tooltip-when-elided="true" name="MainMenu" class="menu-item middle" />
+                <ui:Button text="QUIT" display-tooltip-when-elided="true" name="Quit" class="menu-item" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

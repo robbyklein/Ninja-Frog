@@ -5,12 +5,6 @@ public class MainMenuActions : MonoBehaviour {
     [SerializeField] MenuControls controls;
     [SerializeField] PlayerInputManager playerInput;
 
-    enum MenuAction {
-        Play,
-        Options,
-        Quit
-    }
-
     void OnEnable() {
         controls.OnMenuItemSelected += HandleSelect;
     }

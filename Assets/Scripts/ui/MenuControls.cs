@@ -29,9 +29,13 @@ public class MenuControls : MonoBehaviour {
         playerInput.OnMenusSelectPress += HandleSelect;
 
         // Subscribe to clicks on each item
-        foreach (Button option in Options) {
+        for (int i = 0; i < Options.Count; i++) {
+            int index = i; // no clue why this is needed
+            Button option = Options[i];
             option.RegisterCallback<MouseDownEvent>(e => HandleClick(option), TrickleDown.TrickleDown);
+            option.RegisterCallback<PointerEnterEvent>(e => HandleHover(index));
         }
+
 
     }
 
@@ -41,9 +45,17 @@ public class MenuControls : MonoBehaviour {
         playerInput.OnMenusSelectPress -= HandleSelect;
 
         // Unsubscribe to clicks on each item
-        foreach (Button option in Options) {
+        for (int i = 0; i < Options.Count; i++) {
+            int index = i;
+            Button option = Options[i];
             option.UnregisterCallback<MouseDownEvent>(e => HandleClick(option), TrickleDown.TrickleDown);
+            option.UnregisterCallback<PointerEnterEvent>(e => HandleHover(index));
         }
+    }
+
+    void HighlightButton(int oldIndex, int newIndex) {
+        Options[oldIndex].RemoveFromClassList("menu-item-active");
+        Options[newIndex].AddToClassList("menu-item-active");
     }
 
     void HandleMovement(Vector2 movement) {
@@ -59,8 +71,7 @@ public class MenuControls : MonoBehaviour {
             return;
         }
 
-        Options[oldActiveIndex].RemoveFromClassList("menu-item-active");
-        Options[ActiveOptionIndex].AddToClassList("menu-item-active");
+        HighlightButton(oldActiveIndex, ActiveOptionIndex);
     }
 
     void HandleSelect() {
@@ -70,5 +81,10 @@ public class MenuControls : MonoBehaviour {
 
     void HandleClick(Button option) {
         OnMenuItemSelected?.Invoke(option.name);
+    }
+
+    void HandleHover(int index) {
+        HighlightButton(ActiveOptionIndex, index);
+        ActiveOptionIndex = index;
     }
 }

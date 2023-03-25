@@ -20,9 +20,7 @@ public class PlayerInputManager : ScriptableObject {
 
 
     void OnEnable() {
-
         Input ??= new InputActions();
-
 
         // Player Movement
         Input.Player.Movement.performed += MovementChanged;
@@ -34,7 +32,6 @@ public class PlayerInputManager : ScriptableObject {
 
         // Menus
         Input.Menus.Movement.performed += MenusMovementChanged;
-        Input.Menus.Close.performed += MenusClosePressed;
         Input.Menus.Select.performed += MenusSelectPressed;
         Input.Menus.Enable();
     }
@@ -47,7 +44,6 @@ public class PlayerInputManager : ScriptableObject {
         Input.Player.Start.performed -= StartPressed;
 
         Input.Menus.Movement.performed -= MenusMovementChanged;
-        Input.Menus.Close.performed -= MenusClosePressed;
         Input.Menus.Select.performed -= MenusSelectPressed;
     }
 
@@ -64,16 +60,11 @@ public class PlayerInputManager : ScriptableObject {
     }
 
     void StartPressed(InputAction.CallbackContext obj) {
-        Debug.Log("Start press" + OnStartPress);
         OnStartPress?.Invoke();
     }
 
     void MenusMovementChanged(InputAction.CallbackContext obj) {
         OnMenusMovementChanged?.Invoke(obj.ReadValue<Vector2>());
-    }
-
-    void MenusClosePressed(InputAction.CallbackContext obj) {
-        OnMenusClosePress?.Invoke();
     }
 
     void MenusSelectPressed(InputAction.CallbackContext obj) {
