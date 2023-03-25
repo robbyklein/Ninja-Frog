@@ -5,19 +5,27 @@ using UnityEngine.SceneManagement;
 public class PauseManager : ScriptableObject {
     [SerializeField] PlayerInputManager playerInput;
 
+    bool SceneActive = false;
+
     void OnEnable() {
-        playerInput.OnStartPress += HandlePausePress;
+        playerInput.OnStartPress += HandleStartPress;
         playerInput.OnMenusClosePress += HandleClose;
     }
 
     void OnDisable() {
-        playerInput.OnStartPress -= HandlePausePress;
+        playerInput.OnStartPress -= HandleStartPress;
         playerInput.OnMenusClosePress -= HandleClose;
     }
 
-    void HandlePausePress() {
-        SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
-        playerInput.ChangeActionMap(playerInput.Input.Menus);
+    void HandleStartPress() {
+        if (!SceneActive) {
+            Debug.Log("Start pressed! we need to load scene" + playerInput.Input.Player.enabled);
+            playerInput.ChangeActionMap(playerInput.Input.Menus);
+            SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
+        }
+
+        SceneActive = !SceneActive;
+
     }
 
 
@@ -27,7 +35,9 @@ public class PauseManager : ScriptableObject {
 
     public void Close() {
         SceneManager.UnloadSceneAsync("Pause");
-        if (playerInput) playerInput.ChangeActionMap(playerInput.Input.Player);
+        playerInput.ChangeActionMap(playerInput.Input.Player);
+        SceneActive = !SceneActive;
+
     }
 }
 

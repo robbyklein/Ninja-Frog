@@ -44,6 +44,7 @@ public class PlayerInputManager : ScriptableObject {
         Input.Player.Jump.performed -= JumpPressed;
         Input.Player.Jump.canceled -= JumpReleased;
         Input.Player.Start.performed -= StartPressed;
+
         Input.Menus.Movement.performed -= MenusMovementChanged;
         Input.Menus.Close.performed -= MenusClosePressed;
         Input.Menus.Select.performed -= MenusSelectPressed;

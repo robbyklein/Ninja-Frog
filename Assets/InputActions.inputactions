@@ -30,7 +30,7 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -135,8 +135,8 @@
                 },
                 {
                     "name": "",
-                    "id": "0e729c09-7c81-4fa9-a476-5f1c6e196364",
-                    "path": "<Gamepad>/start",
+                    "id": "b4a756a9-fed8-484d-bbd5-0c8a8ff5c1c5",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -146,8 +146,8 @@
                 },
                 {
                     "name": "",
-                    "id": "e3072f09-420a-4430-82c6-847a3f5464e2",
-                    "path": "<Keyboard>/escape",
+                    "id": "3dbafd0c-e06d-49fb-8058-c22e51c69b00",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

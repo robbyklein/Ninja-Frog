@@ -4,8 +4,8 @@
 
 #pause-wrapper {
     -unity-text-align: upper-center;
-    -unity-font: resource("Assets/TextMesh Pro/Fonts/pixChicago.asset");
-    -unity-font-definition: initial;
+/*    -unity-font: resource("Assets/TextMesh Pro/Fonts/pixChicago.asset");
+*/    -unity-font-definition: initial;
 }
  
 .h1 {
