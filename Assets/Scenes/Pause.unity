@@ -181,9 +181,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 627405669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1bd0dff79ba57344ba127001ba6c383, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f75a583fc17ff2459f1f4af07ff988e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PauseScreen: {fileID: 627405670}
-  playerInput: {fileID: 11400000, guid: 694904246f22c7146931b2a431e7f86f, type: 2}
   pauseManager: {fileID: 11400000, guid: 9c8b879f155cbaf47aaba65ab22fe4fd, type: 2}
+  playerInput: {fileID: 11400000, guid: 694904246f22c7146931b2a431e7f86f, type: 2}

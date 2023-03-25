@@ -18,10 +18,12 @@ public class PlayerInputManager : ScriptableObject {
     public event Action OnMenusClosePress;
     public event Action OnMenusSelectPress;
 
+    void Awake() {
+    }
 
     void OnEnable() {
-        // If null assign
-        Input ??= new InputActions();
+        Input = new InputActions();
+
 
         // Player Movement
         Input.Player.Movement.performed += MovementChanged;
@@ -63,6 +65,7 @@ public class PlayerInputManager : ScriptableObject {
     }
 
     void StartPressed(InputAction.CallbackContext obj) {
+        Debug.Log("Start press" + OnStartPress);
         OnStartPress?.Invoke();
     }
 

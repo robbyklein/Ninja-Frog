@@ -18,6 +18,8 @@ public class PauseManager : ScriptableObject {
     }
 
     void HandleStartPress() {
+        Debug.Log("I am in start press pause");
+
         if (!SceneActive) {
             playerInput.ChangeActionMap(playerInput.Input.Menus);
             SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
