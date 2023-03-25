@@ -1,20 +1,24 @@
-#background {
+.background {
     background-color: #000000;
+    height: 100%; 
+    align-items: center; 
+    justify-content: center; 
+    -unity-font-definition: initial;
 }
 
-#pause-wrapper {
+.content {
     -unity-text-align: upper-center;
-/*    -unity-font: resource("Assets/TextMesh Pro/Fonts/pixChicago.asset");
-*/    -unity-font-definition: initial;
+    max-width: 400px;
+    width: 90%;
 }
  
-.h1 {
-    font-size: 48px;
+.heading {
+    font-size: 40px;
     -unity-font-style: bold;
     color: #fcba03;
 }
 
-#pause-buttons {
+.buttons {
     margin-top: 20px;
 }
 
@@ -32,8 +36,7 @@
     background-color: #fcba03;
 }
 
-.menu-item.middle {
+.menu-item {
     margin-top: 20px;
-    margin-bottom: 20px;
 }
 

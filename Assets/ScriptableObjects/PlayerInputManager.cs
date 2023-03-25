@@ -18,11 +18,10 @@ public class PlayerInputManager : ScriptableObject {
     public event Action OnMenusClosePress;
     public event Action OnMenusSelectPress;
 
-    void Awake() {
-    }
 
     void OnEnable() {
-        Input = new InputActions();
+
+        Input ??= new InputActions();
 
 
         // Player Movement
@@ -31,13 +30,13 @@ public class PlayerInputManager : ScriptableObject {
         Input.Player.Jump.performed += JumpPressed;
         Input.Player.Jump.canceled += JumpReleased;
         Input.Player.Start.performed += StartPressed;
-        Input.Player.Enable();
 
 
         // Menus
         Input.Menus.Movement.performed += MenusMovementChanged;
         Input.Menus.Close.performed += MenusClosePressed;
         Input.Menus.Select.performed += MenusSelectPressed;
+        Input.Menus.Enable();
     }
 
     void OnDisable() {
