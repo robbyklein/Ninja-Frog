@@ -6,6 +6,7 @@ public class MainMenuActions : MonoBehaviour {
     [SerializeField] PlayerInputManager playerInput;
 
     void OnEnable() {
+        playerInput.ChangeActionMap(playerInput.Input.Menus);
         controls.OnMenuItemSelected += HandleSelect;
     }
 
@@ -20,8 +21,7 @@ public class MainMenuActions : MonoBehaviour {
                 Application.Quit();
                 break;
             case "Play":
-                SceneManager.LoadScene("Level1");
-                playerInput.ChangeActionMap(playerInput.Input.Player);
+                SceneManager.LoadScene("Levels");
                 break;
             case "Options":
                 Debug.Log("Pffff options.");

@@ -15,7 +15,6 @@ public class PlayerInputManager : ScriptableObject {
     public event Action OnStartPress;
 
     public event Action<Vector2> OnMenusMovementChanged;
-    public event Action OnMenusClosePress;
     public event Action OnMenusSelectPress;
 
 
@@ -28,12 +27,11 @@ public class PlayerInputManager : ScriptableObject {
         Input.Player.Jump.performed += JumpPressed;
         Input.Player.Jump.canceled += JumpReleased;
         Input.Player.Start.performed += StartPressed;
-
+        Input.Player.Enable();
 
         // Menus
         Input.Menus.Movement.performed += MenusMovementChanged;
         Input.Menus.Select.performed += MenusSelectPressed;
-        Input.Menus.Enable();
     }
 
     void OnDisable() {

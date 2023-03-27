@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerDeath : MonoBehaviour {
     // Components
+    [SerializeField] PlayerInputManager playerInput;
     [SerializeField] Animator anim;
     [SerializeField] Rigidbody2D rb;
 
@@ -28,6 +29,8 @@ public class PlayerDeath : MonoBehaviour {
     }
 
     void RestartLevel() {
+        // Die while paused
+        playerInput.ChangeActionMap(playerInput.Input.Player);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -1,8 +1,9 @@
 .background {
     background-color: #000000;
-    height: 100%; 
+    height: 100%;
     align-items: center; 
     justify-content: center; 
+    -unity-font: url("project://database/Assets/TextMesh%20Pro/Fonts/pixChicago.ttf");
     -unity-font-definition: initial;
 }
 
@@ -39,4 +40,10 @@
 .menu-item {
     margin-top: 20px;
 }
+
+.levels {
+
+}
+
+
 
