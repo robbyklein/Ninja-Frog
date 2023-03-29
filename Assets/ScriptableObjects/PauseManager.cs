@@ -16,11 +16,13 @@ public class PauseManager : ScriptableObject {
     void HandleStartPress() {
         playerInput.ChangeActionMap(playerInput.Input.Menus);
         SceneManager.LoadScene("Pause", LoadSceneMode.Additive);
+        Time.timeScale = 0;
     }
 
     public void Close() {
         SceneManager.UnloadSceneAsync("Pause");
         playerInput.ChangeActionMap(playerInput.Input.Player);
+        Time.timeScale = 1;
     }
 }
 

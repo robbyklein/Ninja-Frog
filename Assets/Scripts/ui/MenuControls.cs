@@ -18,6 +18,8 @@ public class MenuControls : MonoBehaviour {
     public event Action<string> OnMenuItemSelected;
 
     void OnEnable() {
+        Debug.Log("Enabled!");
+
         // Get root el
         root ??= GetComponent<UIDocument>().rootVisualElement;
 
@@ -35,8 +37,6 @@ public class MenuControls : MonoBehaviour {
             option.RegisterCallback<MouseDownEvent>(e => HandleClick(option), TrickleDown.TrickleDown);
             option.RegisterCallback<PointerEnterEvent>(e => HandleHover(index));
         }
-
-
     }
 
     void OnDisable() {

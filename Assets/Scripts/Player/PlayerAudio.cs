@@ -13,14 +13,14 @@ public class PlayerAudio : MonoBehaviour {
         playerJumping.OnJump += PlayJumpSound;
         playerWallJumping.OnWallJump += PlayJumpSound;
         playerDeath.OnDeath += PlayDeathSound;
-        playerCollect.OnTrackCollected += PlayCollectionSound;
+        playerCollect.OnAppleCollected += PlayCollectionSound;
     }
 
     void OnDisable() {
         playerJumping.OnJump -= PlayJumpSound;
         playerWallJumping.OnWallJump -= PlayJumpSound;
         playerDeath.OnDeath -= PlayDeathSound;
-        playerCollect.OnTrackCollected -= PlayCollectionSound;
+        playerCollect.OnAppleCollected -= PlayCollectionSound;
     }
 
     void PlayJumpSound() {
@@ -39,7 +39,7 @@ public class PlayerAudio : MonoBehaviour {
         }
     }
 
-    void PlayCollectionSound(string _) {
+    void PlayCollectionSound() {
         AudioClip clip = sounds.FindSound("CollectSound");
 
         if (clip != null) {

@@ -30,7 +30,6 @@ public class PlayerDeath : MonoBehaviour {
 
     void RestartLevel() {
         // Die while paused
-        playerInput.ChangeActionMap(playerInput.Input.Player);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
