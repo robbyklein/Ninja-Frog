@@ -6,8 +6,11 @@ public class PlayerAudio : MonoBehaviour {
     [SerializeField] PlayerJumping playerJumping;
     [SerializeField] PlayerWallJumping playerWallJumping;
     [SerializeField] PlayerDeath playerDeath;
-    [SerializeField] AudioSource audioSource;
-    [SerializeField] AudioManager sounds;
+    SoundPlayer soundPlayer;
+
+    void Start() {
+        soundPlayer = GameObject.FindGameObjectWithTag("Music").GetComponent<SoundPlayer>();
+    }
 
     void OnEnable() {
         playerJumping.OnJump += PlayJumpSound;
@@ -24,26 +27,14 @@ public class PlayerAudio : MonoBehaviour {
     }
 
     void PlayJumpSound() {
-        AudioClip clip = sounds.FindSound("JumpSound");
-
-        if (clip != null) {
-            audioSource.PlayOneShot(clip);
-        }
+        soundPlayer?.PlaySound(SoundEffect.Jump);
     }
 
     void PlayDeathSound() {
-        AudioClip clip = sounds.FindSound("DeathSound");
-
-        if (clip != null) {
-            audioSource.PlayOneShot(clip);
-        }
+        soundPlayer?.PlaySound(SoundEffect.Death);
     }
 
     void PlayCollectionSound() {
-        AudioClip clip = sounds.FindSound("CollectSound");
-
-        if (clip != null) {
-            audioSource.PlayOneShot(clip);
-        }
+        soundPlayer?.PlaySound(SoundEffect.Collect);
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class MenuControls : MonoBehaviour {
     // Player input
     [SerializeField] PlayerInputManager playerInput;
+    SoundPlayer soundPlayer;
 
     // Ui elements
     VisualElement root;
@@ -17,9 +18,11 @@ public class MenuControls : MonoBehaviour {
     // Events
     public event Action<string> OnMenuItemSelected;
 
-    void OnEnable() {
-        Debug.Log("Enabled!");
+    void Start() {
+        soundPlayer = GameObject.FindGameObjectWithTag("Music").GetComponent<SoundPlayer>();
+    }
 
+    void OnEnable() {
         // Get root el
         root ??= GetComponent<UIDocument>().rootVisualElement;
 
@@ -65,8 +68,10 @@ public class MenuControls : MonoBehaviour {
 
         if (movement.y > 0f && ActiveOptionIndex > 0) {
             ActiveOptionIndex--;
+            PlayChangeSound();
         } else if (movement.y < 0f && ActiveOptionIndex < Options.Count - 1) {
             ActiveOptionIndex++;
+            PlayChangeSound();
         } else {
             return;
         }
@@ -74,17 +79,28 @@ public class MenuControls : MonoBehaviour {
         HighlightButton(oldActiveIndex, ActiveOptionIndex);
     }
 
+    void PlayChangeSound() {
+        soundPlayer?.PlaySound(SoundEffect.MenuChange);
+    }
+
+    void PlaySelectSound() {
+        soundPlayer?.PlaySound(SoundEffect.MenuSelect);
+    }
+
     void HandleSelect() {
         string name = Options[ActiveOptionIndex].name;
         OnMenuItemSelected?.Invoke(name);
+        PlaySelectSound();
     }
 
     void HandleClick(Button option) {
         OnMenuItemSelected?.Invoke(option.name);
+        PlaySelectSound();
     }
 
     void HandleHover(int index) {
         HighlightButton(ActiveOptionIndex, index);
         ActiveOptionIndex = index;
+        PlayChangeSound();
     }
 }

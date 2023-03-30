@@ -5,8 +5,7 @@
             <ui:Label text="LEVELS" display-tooltip-when-elided="true" class="heading" />
             <ui:VisualElement name="Levels" class="levels" />
             <ui:Button text="LEVEL 1" display-tooltip-when-elided="true" name="Level1" class="menu-item menu-item-active" />
-            <ui:Button text="LEVEL 2" display-tooltip-when-elided="true" name="Level3" class="menu-item" />
-            <ui:Button text="LEVEL 3" display-tooltip-when-elided="true" name="Level3" class="menu-item" />
+            <ui:Button text="LEVEL 2" display-tooltip-when-elided="true" name="Level2" class="menu-item" />
             <ui:Button text="MAIN MENU" display-tooltip-when-elided="true" name="MainMenu" class="menu-item" />
         </ui:VisualElement>
     </ui:VisualElement>

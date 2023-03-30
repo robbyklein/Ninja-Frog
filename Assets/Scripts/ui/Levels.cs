@@ -22,6 +22,7 @@ public class Levels : MonoBehaviour {
                 break;
             default:
                 playerInput.ChangeActionMap(playerInput.Input.Player);
+                Time.timeScale = 1;
                 SceneManager.LoadScene(actionName);
                 break;
         }

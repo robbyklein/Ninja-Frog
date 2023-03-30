@@ -29,7 +29,6 @@ public class PlayerDeath : MonoBehaviour {
     }
 
     void RestartLevel() {
-        // Die while paused
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

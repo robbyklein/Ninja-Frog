@@ -26,6 +26,6 @@ public class FinishLevel : MonoBehaviour {
 
     void CompleteLevel() {
         // Restart for now
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("Levels");
     }
 }

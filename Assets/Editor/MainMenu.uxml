@@ -2,10 +2,9 @@
     <Style src="project://database/Assets/Editor/Styles.uss?fileID=7433441132597879392&amp;guid=851a83608e9a9924782aeb8298aca304&amp;type=3#Styles" />
     <ui:VisualElement name="background" class="background">
         <ui:VisualElement name="content" class="content" style="-unity-font: url(&apos;project://database/Assets/TextMesh%20Pro/Fonts/pixChicago.ttf?fileID=12800000&amp;guid=f3fb6eba79322a44ba216799170088fa&amp;type=3#pixChicago&apos;);">
-            <ui:Label text="PLATFORMER" name="heading" class="heading" />
+            <ui:Label text="NINJA FROG!" name="heading" class="heading" />
             <ui:VisualElement name="Buttons" class="buttons">
                 <ui:Button text="PLAY" display-tooltip-when-elided="true" name="Play" class="menu-item menu-item-active" />
-                <ui:Button text="OPTIONS" display-tooltip-when-elided="true" name="Options" class="menu-item" />
                 <ui:Button text="QUIT" display-tooltip-when-elided="true" name="Quit" class="menu-item" />
             </ui:VisualElement>
         </ui:VisualElement>
